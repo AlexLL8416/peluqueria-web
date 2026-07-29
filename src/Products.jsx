@@ -50,12 +50,12 @@ export default function Products() {
             <div className="w-full bg-scandi-white border-b border-scandi-darker/10 p-6 md:p-8 shadow-sm text-center relative flex items-center justify-center">
                 
                 {/* Botón de volver al inicio */}
-                <a 
-                    href="/" 
-                    className="absolute left-6 md:left-12 font-inter text-[10px] tracking-widest text-scandi-gray hover:text-scandi-black uppercase flex items-center gap-2 transition-colors z-10"
-                >
-                    &larr; <span className="hidden md:inline">Volver al inicio</span>
-                </a>
+                <a
+                href="/"
+                className="absolute top-8 left-6 scale-175 md:scale-100 md:left-12 font-inter text-[10px] tracking-widest text-scandi-gray hover:text-scandi-black uppercase flex items-center gap-2 transition-colors"
+            >
+                &larr; <span className="hidden md:inline">Volver a la web</span>
+            </a>
 
                 <div>
                     <span className="font-inter text-[10px] tracking-[0.3em] text-scandi-gray uppercase mb-2 block">
