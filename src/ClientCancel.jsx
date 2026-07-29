@@ -58,7 +58,7 @@ export default function ClientCancel() {
             {/* Botón para volver a la web principal */}
             <a
                 href="/"
-                className="absolute left-8 md:left-12 scale-175 font-inter text-[10px] tracking-widest text-scandi-gray hover:text-scandi-black uppercase flex items-center gap-2 transition-colors"
+                className="absolute top-8 left-8 md:left-12 scale-175 font-inter text-[10px] tracking-widest text-scandi-gray hover:text-scandi-black uppercase flex items-center gap-2 transition-colors"
             >
                 &larr; <span className="hidden md:inline">Volver</span>
             </a>
