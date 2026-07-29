@@ -69,8 +69,26 @@ export default function ClientView() {
     const confirmarReserva = async (e) => {
         e.preventDefault()
 
-        if (!nombre.trim() || !telefono.trim()) {
+        const nombreTrim = nombre.trim()
+        const telefonoTrim = telefono.trim()
+
+        // 1. Validar que no estén vacíos
+        if (!nombreTrim || !telefonoTrim) {
             setMensaje({ texto: 'Por favor, rellena todos los datos.', tipo: 'error' })
+            return
+        }
+
+        // 2. Validar el nombre (solo letras, espacios y acentos, mínimo 2 caracteres)
+        const regexNombre = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s'-]{2,}$/
+        if (!regexNombre.test(nombreTrim)) {
+            setMensaje({ texto: 'Por favor, introduce un nombre válido (solo letras).', tipo: 'error' })
+            return
+        }
+
+        // 3. Validar el teléfono (limpiamos espacios/guiones y comprobamos que tenga al menos 9 dígitos numéricos)
+        const telefonoSoloDigitos = telefonoTrim.replace(/\D/g, '')
+        if (telefonoSoloDigitos.length < 9) {
+            setMensaje({ texto: 'Por favor, introduce un número de teléfono válido (mínimo 9 dígitos).', tipo: 'error' })
             return
         }
 
@@ -80,8 +98,8 @@ export default function ClientView() {
             .from('citas')
             .update({
                 estado: 'reservada',
-                nombre_cliente: nombre,
-                telefono: telefono
+                nombre_cliente: nombreTrim,
+                telefono: telefonoTrim
             })
             .eq('id', citaSeleccionada.id)
             .select()
@@ -142,8 +160,8 @@ export default function ClientView() {
                 {/* MENSAJES DE ESTADO */}
                 {mensaje.texto && (
                     <div className={`mb-8 p-4 text-center rounded-2xl font-light text-xs tracking-wider uppercase shadow-sm border ${mensaje.tipo === 'error' ? 'bg-red-50 text-red-700 border-red-200' :
-                            mensaje.tipo === 'info' ? 'bg-amber-50 text-amber-800 border-amber-200' :
-                                'bg-emerald-50 text-emerald-800 border-emerald-200'
+                        mensaje.tipo === 'info' ? 'bg-amber-50 text-amber-800 border-amber-200' :
+                            'bg-emerald-50 text-emerald-800 border-emerald-200'
                         }`}>
                         {mensaje.texto}
                     </div>
@@ -171,8 +189,8 @@ export default function ClientView() {
                                                 key={dia}
                                                 onClick={() => setDiaSeleccionado(dia)}
                                                 className={`whitespace-nowrap px-6 py-4 rounded-2xl font-inter text-xs tracking-widest uppercase transition-all shrink-0 border ${diaSeleccionado === dia
-                                                        ? 'bg-scandi-black text-scandi-light border-scandi-black shadow-md'
-                                                        : 'bg-scandi-white text-scandi-black border-scandi-darker/20 hover:border-scandi-black'
+                                                    ? 'bg-scandi-black text-scandi-light border-scandi-black shadow-md'
+                                                    : 'bg-scandi-white text-scandi-black border-scandi-darker/20 hover:border-scandi-black'
                                                     }`}
                                             >
                                                 {formatearFecha(dia)}
@@ -233,6 +251,8 @@ export default function ClientView() {
                                     value={nombre}
                                     onChange={(e) => setNombre(e.target.value)}
                                     placeholder="Ej. Alejandro"
+                                    pattern="[A-Za-záéíóúÁÉÍÓÚñÑ\s]+"
+                                    title="Solo se permiten letras, espacios y acentos"
                                     className="w-full p-4 border border-scandi-darker/20 rounded-2xl bg-scandi-light/50 focus:bg-scandi-white focus:ring-1 focus:ring-scandi-accent focus:border-scandi-accent outline-none transition-all font-light text-sm"
                                     required
                                 />
@@ -245,6 +265,8 @@ export default function ClientView() {
                                     value={telefono}
                                     onChange={(e) => setTelefono(e.target.value)}
                                     placeholder="Ej. 600 123 456"
+                                    pattern="[0-9\s+()-]+"
+                                    title="Introduce un número de teléfono válido"
                                     className="w-full p-4 border border-scandi-darker/20 rounded-2xl bg-scandi-light/50 focus:bg-scandi-white focus:ring-1 focus:ring-scandi-accent focus:border-scandi-accent outline-none transition-all font-light text-sm"
                                     required
                                 />
