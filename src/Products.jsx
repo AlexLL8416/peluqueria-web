@@ -45,17 +45,17 @@ export default function Products() {
 
     return (
         <div className="w-full min-h-screen bg-scandi-light flex flex-col font-inter">
-            
+
             {/* CABECERA */}
             <div className="w-full bg-scandi-white border-b border-scandi-darker/10 p-6 md:p-8 shadow-sm text-center relative flex items-center justify-center">
-                
+
                 {/* Botón de volver al inicio */}
                 <a
-                href="/"
-                className="absolute top-8 left-6 scale-175 md:scale-100 md:left-12 font-inter text-[10px] tracking-widest text-scandi-gray hover:text-scandi-black uppercase flex items-center gap-2 transition-colors"
-            >
-                &larr; <span className="hidden md:inline">Volver a la web</span>
-            </a>
+                    href="/"
+                    className="absolute left-8 md:left-12 scale-175 font-inter text-[10px] tracking-widest text-scandi-gray hover:text-scandi-black uppercase flex items-center gap-2 transition-colors"
+                >
+                    &larr; <span className="hidden md:inline">Volver</span>
+                </a>
 
                 <div>
                     <span className="font-inter text-[10px] tracking-[0.3em] text-scandi-gray uppercase mb-2 block">
@@ -70,18 +70,18 @@ export default function Products() {
             {/* CONTENEDOR DE PRODUCTOS (GRID) */}
             <div className="w-full max-w-6xl mx-auto flex-1 p-6 md:p-12">
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 md:gap-10">
-                    
+
                     {listaProductos.map((producto) => (
-                        <div 
-                            key={producto.id} 
+                        <div
+                            key={producto.id}
                             onClick={() => setProductoSeleccionado(producto)}
                             className="group cursor-pointer flex flex-col"
                         >
                             {/* Tarjeta de imagen con efecto escala de grises */}
                             <div className="w-full aspect-[4/5] bg-scandi-base rounded-2xl overflow-hidden mb-4 shadow-sm relative">
-                                <img 
-                                    src={producto.imagen} 
-                                    alt={producto.nombre} 
+                                <img
+                                    src={producto.imagen}
+                                    alt={producto.nombre}
                                     className="w-full h-full object-cover grayscale transition-all duration-700 ease-in-out md:group-hover:grayscale-0 md:group-hover:scale-105"
                                 />
                                 {/* Overlay sutil para indicar que es clicable en móvil */}
@@ -104,17 +104,17 @@ export default function Products() {
 
             {/* MODAL DE DESCRIPCIÓN (Se muestra solo si hay un producto seleccionado) */}
             {productoSeleccionado && (
-                <div 
+                <div
                     className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-6 bg-scandi-black/40 backdrop-blur-sm animate-fade-in"
                     onClick={() => setProductoSeleccionado(null)} // Cierra al hacer clic fuera
                 >
                     {/* Contenedor principal del modal */}
-                    <div 
+                    <div
                         className="w-full max-w-lg bg-scandi-white rounded-3xl shadow-xl overflow-hidden flex flex-col transform transition-all"
                         onClick={(e) => e.stopPropagation()} // Evita que se cierre al hacer clic dentro
                     >
                         {/* Botón cerrar flotante */}
-                        <button 
+                        <button
                             onClick={() => setProductoSeleccionado(null)}
                             className="absolute top-4 right-4 z-10 bg-scandi-white/80 backdrop-blur-md text-scandi-black w-8 h-8 rounded-full flex items-center justify-center hover:bg-scandi-black hover:text-scandi-white transition-colors border border-scandi-darker/10"
                         >
@@ -122,9 +122,9 @@ export default function Products() {
                         </button>
 
                         <div className="w-full h-64 md:h-80 bg-scandi-base relative">
-                            <img 
-                                src={productoSeleccionado.imagen} 
-                                alt={productoSeleccionado.nombre} 
+                            <img
+                                src={productoSeleccionado.imagen}
+                                alt={productoSeleccionado.nombre}
                                 className="w-full h-full object-cover"
                             />
                         </div>
@@ -136,14 +136,14 @@ export default function Products() {
                             <p className="font-inter text-sm tracking-widest text-scandi-accent uppercase font-medium mb-6">
                                 {productoSeleccionado.precio}
                             </p>
-                            
+
                             <div className="w-12 h-px bg-scandi-darker/20 mx-auto mb-6"></div>
-                            
+
                             <p className="font-inter text-sm text-scandi-gray font-light leading-relaxed">
                                 {productoSeleccionado.descripcion}
                             </p>
 
-                            <button 
+                            <button
                                 onClick={() => setProductoSeleccionado(null)}
                                 className="mt-8 w-full border border-scandi-darker/20 text-scandi-black font-inter text-xs tracking-widest uppercase py-4 rounded-2xl hover:border-scandi-black hover:bg-scandi-light transition-all"
                             >

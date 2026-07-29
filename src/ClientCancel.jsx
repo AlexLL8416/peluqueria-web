@@ -58,9 +58,9 @@ export default function ClientCancel() {
             {/* Botón para volver a la web principal */}
             <a
                 href="/"
-                className="absolute top-8 left-6 scale-175 md:scale-100 md:left-12 font-inter text-[10px] tracking-widest text-scandi-gray hover:text-scandi-black uppercase flex items-center gap-2 transition-colors"
+                className="absolute left-8 md:left-12 scale-175 font-inter text-[10px] tracking-widest text-scandi-gray hover:text-scandi-black uppercase flex items-center gap-2 transition-colors"
             >
-                &larr; <span className="hidden md:inline">Volver a la web</span>
+                &larr; <span className="hidden md:inline">Volver</span>
             </a>
 
             <div className="w-full max-w-md bg-scandi-white p-8 md:p-10 rounded-3xl shadow-sm border border-scandi-darker/10">
@@ -80,8 +80,8 @@ export default function ClientCancel() {
                 {/* MENSAJES DE ESTADO */}
                 {mensaje.texto && (
                     <div className={`mb-8 p-4 text-center rounded-2xl font-light text-xs tracking-wider uppercase shadow-sm border ${mensaje.tipo === 'error' ? 'bg-red-50 text-red-700 border-red-200' :
-                            mensaje.tipo === 'info' ? 'bg-amber-50 text-amber-800 border-amber-200' :
-                                'bg-emerald-50 text-emerald-800 border-emerald-200'
+                        mensaje.tipo === 'info' ? 'bg-amber-50 text-amber-800 border-amber-200' :
+                            'bg-emerald-50 text-emerald-800 border-emerald-200'
                         }`}>
                         {mensaje.texto}
                     </div>
@@ -106,8 +106,8 @@ export default function ClientCancel() {
                         type="submit"
                         disabled={cargando}
                         className={`w-full font-inter text-xs tracking-widest uppercase py-4 px-6 rounded-2xl transition-all shadow-md ${cargando
-                                ? 'bg-scandi-darker/10 text-scandi-gray cursor-not-allowed'
-                                : 'bg-scandi-black text-scandi-white hover:bg-red-950'
+                            ? 'bg-scandi-darker/10 text-scandi-gray cursor-not-allowed'
+                            : 'bg-scandi-black text-scandi-white hover:bg-red-950'
                             }`}
                     >
                         {cargando ? 'Procesando...' : 'Cancelar mi reserva'}
