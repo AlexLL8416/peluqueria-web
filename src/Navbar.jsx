@@ -31,7 +31,7 @@ export default function Navbar() {
                     
                     {/* Logo */}
                     <div className={`flex items-center gap-3 cursor-pointer z-50 transition-all duration-700 origin-left ${scrolled || isOpen ? 'scale-75' : 'scale-100'}`}>
-                        <img src="./public/iconoRomeroStudioOpcion2.svg" alt="Logo Romero Studio" className={`p-2.5 rounded-full object-contain transition-all duration-700 ${scrolled  && !isOpen
+                        <img src="/iconoRomeroStudioOpcion2.svg" alt="Logo Romero Studio" className={`p-2.5 rounded-full object-contain transition-all duration-700 ${scrolled  && !isOpen
                             ? 'w-14 h-14 md:w-16 md:h-16 bg-scandi-base border-2 border-scandi-accent'
                             : 'w-12 h-12 md:w-12 md:h-12 bg-transparent border-transparent'}`} />
                         <div className={`leading-none flex flex-col transition-all duration-700 ${scrolled || isOpen ? 'opacity-0' : 'opacity-100'}`}>
