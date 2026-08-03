@@ -1,0 +1,247 @@
+import { useState } from 'react'
+import { supabase } from './supabase'
+
+export default function AdminPlantilla() {
+    const [plantilla, setPlantilla] = useState([])
+    const [nuevaHora, setNuevaHora] = useState('10:00')
+    const [nuevaDuracion, setNuevaDuracion] = useState(30)
+
+    const [fechaCalendario, setFechaCalendario] = useState(new Date())
+    const [diasSeleccionados, setDiasSeleccionados] = useState([])
+
+    const [mensaje, setMensaje] = useState({ texto: '', tipo: '' })
+
+    const calcularSiguienteHueco = (huecos) => {
+        if (huecos.length === 0) {
+            setNuevaHora('10:00')
+            return
+        }
+        const ultimaCita = huecos[huecos.length - 1]
+        const [horas, minutos] = ultimaCita.hora.split(':').map(Number)
+        const fechaFin = new Date(2000, 0, 1, horas, minutos + ultimaCita.duracion)
+        setNuevaHora(fechaFin.toTimeString().substring(0, 5))
+        setNuevaDuracion(ultimaCita.duracion)
+    }
+
+    const añadirHueco = (e) => {
+        e.preventDefault()
+        const nuevoHueco = {
+            id: `plantilla-${Date.now()}`,
+            hora: nuevaHora,
+            duracion: parseInt(nuevaDuracion)
+        }
+        const nuevaPlantilla = [...plantilla, nuevoHueco]
+        setPlantilla(nuevaPlantilla)
+        calcularSiguienteHueco(nuevaPlantilla)
+    }
+
+    const eliminarHueco = (id) => {
+        const nuevaPlantilla = plantilla.filter(h => h.id !== id)
+        setPlantilla(nuevaPlantilla)
+        calcularSiguienteHueco(nuevaPlantilla)
+    }
+
+    const diasMesActual = new Date(fechaCalendario.getFullYear(), fechaCalendario.getMonth() + 1, 0).getDate()
+    const primerDiaMes = new Date(fechaCalendario.getFullYear(), fechaCalendario.getMonth(), 1).getDay()
+    const inicioOffset = primerDiaMes === 0 ? 6 : primerDiaMes - 1
+
+    const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
+
+    const toggleDia = (dia) => {
+        const mesFormateado = (fechaCalendario.getMonth() + 1).toString().padStart(2, '0')
+        const diaFormateado = dia.toString().padStart(2, '0')
+        const fechaString = `${fechaCalendario.getFullYear()}-${mesFormateado}-${diaFormateado}`
+
+        if (diasSeleccionados.includes(fechaString)) {
+            setDiasSeleccionados(diasSeleccionados.filter(d => d !== fechaString))
+        } else {
+            setDiasSeleccionados([...diasSeleccionados, fechaString])
+        }
+    }
+
+    const cambiarMes = (incremento) => {
+        const nuevaFecha = new Date(fechaCalendario)
+        nuevaFecha.setMonth(nuevaFecha.getMonth() + incremento)
+        setFechaCalendario(nuevaFecha)
+    }
+
+    const generarCitas = async () => {
+        if (plantilla.length === 0) {
+            setMensaje({ texto: 'Añade al menos un hueco a la plantilla.', tipo: 'error' })
+            return
+        }
+        if (diasSeleccionados.length === 0) {
+            setMensaje({ texto: 'Selecciona al menos un día en el calendario.', tipo: 'error' })
+            return
+        }
+
+        setMensaje({ texto: 'Generando citas en bloque...', tipo: 'info' })
+
+        const citasParaSubir = []
+        diasSeleccionados.forEach(diaString => {
+            plantilla.forEach(hueco => {
+                const fechaHora = new Date(`${diaString}T${hueco.hora}`).toISOString()
+                citasParaSubir.push({
+                    fecha_hora: fechaHora,
+                    estado: 'disponible',
+                    duracion_minutos: hueco.duracion
+                })
+            })
+        })
+
+        const { error } = await supabase.from('citas').insert(citasParaSubir)
+
+        if (error) {
+            console.error(error)
+            setMensaje({ texto: 'Error al subir las citas múltiples.', tipo: 'error' })
+        } else {
+            setMensaje({ texto: `¡Se han creado ${citasParaSubir.length} citas correctamente!`, tipo: 'exito' })
+            setPlantilla([])
+            setDiasSeleccionados([])
+            setTimeout(() => setMensaje({ texto: '', tipo: '' }), 4000)
+        }
+    }
+
+    return (
+        <div className="w-full max-w-6xl mx-auto p-4 sm:p-6 lg:py-12">
+
+            {mensaje.texto && (
+                <div className={`mb-8 p-4 text-center rounded-2xl font-light text-xs tracking-wider uppercase shadow-sm border ${mensaje.tipo === 'error' ? 'bg-red-50 text-red-700 border-red-200' :
+                    mensaje.tipo === 'info' ? 'bg-amber-50 text-amber-800 border-amber-200' :
+                        'bg-emerald-50 text-emerald-800 border-emerald-200'
+                    }`}>
+                    {mensaje.texto}
+                </div>
+            )}
+
+            {/* FLEX COL EN MÓVIL (ARRIBA/ABAJO) Y ROW EN PC (IZQUIERDA/DERECHA) */}
+            <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
+
+                {/* PARTE 1: PLANTILLA DE HORAS (Arriba en móvil, Izquierda en PC) */}
+                <div className="w-full lg:w-1/2 flex flex-col gap-6">
+                    <h3 className="font-inter text-[10px] tracking-widest text-scandi-gray uppercase mb-2 px-2">
+                        1. Define los huecos del día
+                    </h3>
+
+                    {/* Formulario de añadir horas */}
+                    <form onSubmit={añadirHueco} className="p-5 md:p-6 bg-scandi-white rounded-3xl border border-scandi-darker/10 shadow-sm w-full box-border overflow-hidden">
+                        <div className="grid grid-cols-1 sm:grid-cols-[1fr_1fr_auto] gap-4 sm:gap-6 sm:items-end w-full">
+                            <div className="w-full min-w-0 flex flex-col">
+                                <label className="block font-inter text-[10px] tracking-widest text-scandi-gray uppercase mb-2">Hora Inicio</label>
+                                <input
+                                    type="time"
+                                    value={nuevaHora}
+                                    onChange={(e) => setNuevaHora(e.target.value)}
+                                    className="w-full min-w-0 appearance-none py-3 px-2 md:p-4 border border-scandi-darker/20 rounded-2xl bg-scandi-light/50 focus:bg-scandi-white focus:ring-1 focus:ring-scandi-accent outline-none text-sm transition-all box-border"
+                                    required
+                                />
+                            </div>
+                            <div className="w-full min-w-0 flex flex-col">
+                                <label className="block font-inter text-[10px] tracking-widest text-scandi-gray uppercase mb-2">Minutos</label>
+                                <input
+                                    type="number"
+                                    step="5"
+                                    value={nuevaDuracion}
+                                    onChange={(e) => setNuevaDuracion(e.target.value)}
+                                    className="w-full min-w-0 appearance-none py-3 px-2 md:p-4 border border-scandi-darker/20 rounded-2xl bg-scandi-light/50 focus:bg-scandi-white focus:ring-1 focus:ring-scandi-accent outline-none text-sm transition-all box-border"
+                                    required
+                                />
+                            </div>
+                            <button
+                                type="submit"
+                                className="w-full sm:w-auto bg-scandi-black text-scandi-white font-inter text-xs tracking-widest uppercase py-3 md:py-4 px-8 rounded-2xl hover:bg-scandi-accent hover:text-scandi-black transition-colors shadow-md box-border"
+                            >
+                                Añadir
+                            </button>
+                        </div>
+                    </form>
+
+                    <div className="space-y-3 mt-2">
+                        {plantilla.length === 0 ? (
+                            <div className="text-center py-12 bg-scandi-white rounded-3xl border border-scandi-darker/10 border-dashed">
+                                <p className="font-inter text-sm text-scandi-gray font-light">
+                                    No hay huecos añadidos a la plantilla.
+                                </p>
+                            </div>
+                        ) : (
+                            plantilla.map((hueco) => (
+                                <div key={hueco.id} className="flex items-center justify-between p-5 rounded-2xl bg-scandi-white border border-scandi-darker/10 shadow-sm transition-all hover:border-scandi-darker/30">
+                                    <span className="font-cormorant text-2xl text-scandi-black">{hueco.hora}</span>
+                                    <div className="flex items-center gap-6">
+                                        <span className="font-inter text-xs text-scandi-gray">{hueco.duracion} min</span>
+                                        <button onClick={() => eliminarHueco(hueco.id)} className="font-inter text-[10px] tracking-widest uppercase text-scandi-gray hover:text-red-500 transition-colors">
+                                            Eliminar
+                                        </button>
+                                    </div>
+                                </div>
+                            ))
+                        )}
+                    </div>
+                </div>
+
+                {/* PARTE 2: CALENDARIO (Abajo en móvil, Derecha en PC) */}
+                <div className="w-full lg:w-1/2 flex flex-col gap-6">
+                    <h3 className="font-inter text-[10px] tracking-widest text-scandi-gray uppercase mb-2 px-2">
+                        2. Aplícalos al calendario
+                    </h3>
+
+                    <div className="bg-scandi-white p-5 md:p-8 rounded-3xl border border-scandi-darker/10 shadow-sm">
+                        <div className="flex justify-between items-center mb-8">
+                            <button onClick={() => cambiarMes(-1)} className="text-scandi-gray hover:text-scandi-black p-2 text-xl transition-colors">&larr;</button>
+                            <h4 className="font-cormorant text-xl md:text-2xl text-scandi-black uppercase font-medium tracking-wide">
+                                {meses[fechaCalendario.getMonth()]} {fechaCalendario.getFullYear()}
+                            </h4>
+                            <button onClick={() => cambiarMes(1)} className="text-scandi-gray hover:text-scandi-black p-2 text-xl transition-colors">&rarr;</button>
+                        </div>
+
+                        <div className="grid grid-cols-7 gap-1 md:gap-2 mb-3">
+                            {['L', 'M', 'X', 'J', 'V', 'S', 'D'].map(d => (
+                                <div key={d} className="text-center font-inter text-[10px] md:text-xs tracking-widest text-scandi-gray uppercase pb-2">{d}</div>
+                            ))}
+                        </div>
+
+                        <div className="grid grid-cols-7 gap-1 md:gap-2">
+                            {Array.from({ length: inicioOffset }).map((_, i) => (
+                                <div key={`empty-${i}`} className="p-2"></div>
+                            ))}
+                            {Array.from({ length: diasMesActual }).map((_, i) => {
+                                const dia = i + 1;
+                                const mesStr = (fechaCalendario.getMonth() + 1).toString().padStart(2, '0')
+                                const diaStr = dia.toString().padStart(2, '0')
+                                const fechaActualStr = `${fechaCalendario.getFullYear()}-${mesStr}-${diaStr}`
+                                const seleccionado = diasSeleccionados.includes(fechaActualStr)
+
+                                return (
+                                    <button
+                                        key={dia}
+                                        onClick={() => toggleDia(dia)}
+                                        className={`aspect-square flex items-center justify-center rounded-xl font-inter text-xs md:text-sm transition-all ${seleccionado
+                                            ? 'bg-scandi-black text-scandi-white shadow-md scale-105'
+                                            : 'bg-scandi-light text-scandi-black hover:border hover:border-scandi-accent border border-transparent'
+                                            }`}
+                                    >
+                                        {dia}
+                                    </button>
+                                )
+                            })}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* BOTÓN FINAL DE GUARDADO */}
+            <div className="mt-10 md:mt-12 flex justify-end">
+                <button
+                    onClick={generarCitas}
+                    disabled={plantilla.length === 0 || diasSeleccionados.length === 0}
+                    className={`w-full lg:w-auto px-8 md:px-12 py-5 rounded-2xl font-inter text-xs tracking-widest uppercase transition-all shadow-md ${plantilla.length > 0 && diasSeleccionados.length > 0
+                        ? 'bg-scandi-accent text-scandi-black hover:bg-scandi-black hover:text-scandi-white cursor-pointer'
+                        : 'bg-scandi-gray/20 text-scandi-gray cursor-not-allowed'
+                        }`}
+                >
+                    Subir {plantilla.length * diasSeleccionados.length} citas al servidor
+                </button>
+            </div>
+        </div>
+    )
+}

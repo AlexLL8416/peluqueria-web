@@ -107,6 +107,7 @@ export default function Services() {
                                 <div
                                     key={index}
                                     className="group bg-scandi-white border border-scandi-darker/30 hover:border-scandi-accent p-6 rounded-2xl flex flex-col h-full shadow-sm cursor-pointer transition-all duration-300"
+                                    onClick={() => window.location.href = '/productos'}
                                 >
                                     <div className="flex justify-between items-start mb-4 gap-2">
                                         <h4 className="font-cormorant text-2xl text-scandi-black group-hover:text-scandi-accent transition-colors duration-300">

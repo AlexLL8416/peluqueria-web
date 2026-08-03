@@ -15,6 +15,7 @@ export default function ClientView() {
 
     const [mensaje, setMensaje] = useState({ texto: '', tipo: '' })
     const [cargando, setCargando] = useState(true)
+    const [guardando, setGuardando] = useState(false)
 
     useEffect(() => {
         cargarCitas()
@@ -23,13 +24,15 @@ export default function ClientView() {
     const cargarCitas = async () => {
         setCargando(true)
 
-        const hoy = new Date().toISOString()
+        const fechaConMargen = new Date();
+        fechaConMargen.setHours(fechaConMargen.getHours() + 1);
+        const limite = fechaConMargen.toISOString();
 
         const { data, error } = await supabase
             .from('citas')
             .select('*')
             .eq('estado', 'disponible')
-            .gte('fecha_hora', hoy)
+            .gte('fecha_hora', limite)
             .order('fecha_hora', { ascending: true })
 
         if (error) {
@@ -68,6 +71,7 @@ export default function ClientView() {
 
     const confirmarReserva = async (e) => {
         e.preventDefault()
+        setGuardando(true)
 
         const nombreTrim = nombre.trim()
         const telefonoTrim = telefono.trim()
@@ -75,6 +79,7 @@ export default function ClientView() {
         // 1. Validar que no estén vacíos
         if (!nombreTrim || !telefonoTrim) {
             setMensaje({ texto: 'Por favor, rellena todos los datos.', tipo: 'error' })
+            setGuardando(false)
             return
         }
 
@@ -82,13 +87,56 @@ export default function ClientView() {
         const regexNombre = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s'-]{2,}$/
         if (!regexNombre.test(nombreTrim)) {
             setMensaje({ texto: 'Por favor, introduce un nombre válido (solo letras).', tipo: 'error' })
+            setGuardando(false)
             return
         }
 
         // 3. Validar el teléfono (limpiamos espacios/guiones y comprobamos que tenga al menos 9 dígitos numéricos)
         const telefonoSoloDigitos = telefonoTrim.replace(/\D/g, '')
-        if (telefonoSoloDigitos.length < 9) {
+        if (telefonoSoloDigitos.length !== 9) {
             setMensaje({ texto: 'Por favor, introduce un número de teléfono válido (mínimo 9 dígitos).', tipo: 'error' })
+            setGuardando(false)
+            return
+        }
+
+        setMensaje({ texto: 'Verificando disponibilidad...', tipo: 'info' })
+
+        // --- VALIDACIÓN A: Comprobar si el teléfono está baneado ---
+        const { data: baneado } = await supabase
+            .from('baneados')
+            .select('*')
+            .eq('telefono', telefonoTrim)
+            .single()
+
+        if (baneado) {
+            setMensaje({ texto: 'Este número de teléfono no tiene permitido realizar reservas.', tipo: 'error' })
+            setGuardando(false)
+            return
+        }
+
+        // --- VALIDACIÓN B: Comprobar si ya tiene una cita esa semana ---
+        const fechaCitaElegida = new Date(citaSeleccionada.fecha_hora)
+
+        const diaSemana = fechaCitaElegida.getDay()
+        const diffAlLunes = fechaCitaElegida.getDate() - diaSemana + (diaSemana === 0 ? -6 : 1)
+        const inicioSemana = new Date(fechaCitaElegida.setDate(diffAlLunes))
+        inicioSemana.setHours(0, 0, 0, 0)
+
+        const finSemana = new Date(inicioSemana)
+        finSemana.setDate(finSemana.getDate() + 6)
+        finSemana.setHours(23, 59, 59, 999)
+
+        const { data: citasDeLaSemana, error: errorSemana } = await supabase
+            .from('citas')
+            .select('*')
+            .eq('telefono', telefonoTrim)
+            .gte('fecha_hora', inicioSemana.toISOString())
+            .lte('fecha_hora', finSemana.toISOString())
+            .neq('estado', 'disponible')
+
+        if (!errorSemana && citasDeLaSemana && citasDeLaSemana.length > 0) {
+            setMensaje({ texto: 'Ya tienes una cita reservada para esta semana. Solo se permite una por semana.', tipo: 'error' })
+            setGuardando(false)
             return
         }
 
@@ -107,7 +155,7 @@ export default function ClientView() {
         if (error || !data || data.length === 0) {
             console.error("Error al reservar o cita ocupada:", error)
             setMensaje({ texto: '¡Vaya! Alguien acaba de reservar esta cita. Por favor, elige otra.', tipo: 'error' })
-
+            setGuardando(false)
             cargarCitas()
             setCitaSeleccionada(null)
             return
@@ -137,7 +185,7 @@ export default function ClientView() {
             {/* Cabecera Estilizada con botón de regreso general */}
             <div className="w-full bg-scandi-white border-b border-scandi-darker/10 p-8 shadow-sm text-center relative flex items-center justify-center">
 
-                {/* NUEVO: Botón de regresar a la Home */}
+                {/* Botón de regresar a la Home */}
                 <a
                     href="/"
                     className="absolute left-8 md:left-12 scale-175 font-inter text-[10px] tracking-widest text-scandi-gray hover:text-scandi-black uppercase flex items-center gap-2 transition-colors"
@@ -274,9 +322,11 @@ export default function ClientView() {
 
                             <button
                                 type="submit"
-                                className="w-full bg-scandi-black text-scandi-white font-inter text-xs tracking-widest uppercase py-4 px-6 rounded-2xl hover:bg-scandi-accent hover:text-scandi-black transition-colors shadow-md mt-4"
+                                disabled={guardando}
+                                className={`w-full font-inter text-xs tracking-widest uppercase py-4 px-6 rounded-2xl shadow-md mt-4 transition-colors ${guardando ? 'bg-scandi-gray text-scandi-white cursor-not-allowed' : 'bg-scandi-black text-scandi-white hover:bg-scandi-accent hover:text-scandi-black'
+                                    }`}
                             >
-                                Confirmar Reserva
+                                {guardando ? 'Procesando...' : 'Confirmar Reserva'}
                             </button>
                         </form>
                     </div>
@@ -301,14 +351,13 @@ export default function ClientView() {
                             </p>
 
                             <div className="mt-4 p-4 bg-scandi-accent/10 border border-scandi-accent/30 rounded-xl flex gap-3 items-start">
-                                <Camera className="text-lg w-16 h-16 text-scandi-base fill-scandi-accent"/>
+                                <Camera className="text-lg w-16 h-16 text-scandi-base fill-scandi-accent" />
                                 <p className="font-inter text-xs text-scandi-black/80 font-light leading-relaxed">
                                     ¡Haz una captura de pantalla a este código! Lo necesitarás si en algún momento deseas cancelar tu cita.
                                 </p>
                             </div>
                         </div>
 
-                        {/* NUEVO: Redirige a la página principal */}
                         <button
                             onClick={() => window.location.href = '/'}
                             className="w-full bg-scandi-black text-scandi-white font-inter text-xs tracking-widest uppercase py-4 px-6 rounded-2xl hover:bg-scandi-accent hover:text-scandi-black transition-colors shadow-md"

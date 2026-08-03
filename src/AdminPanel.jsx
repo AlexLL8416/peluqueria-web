@@ -190,30 +190,24 @@ export default function AdminPanel() {
 
     const listaCompleta = [...citasDelDia, ...citasBorrador]
 
-    const cerrarSesion = async () => {
-        const { error } = await supabase.auth.signOut()
+    const banearTelefono = async (telefono, nombre) => {
+        if (!telefono) return;
+        const seguro = window.confirm(`¿Seguro que quieres bloquear a ${nombre || 'este cliente'} (${telefono})? No podrá volver a reservar.`);
+        if (!seguro) return;
+
+        const { error } = await supabase.from('baneados').insert([{ telefono: telefono }]);
+
+        if (error) {
+            console.error(error);
+            setMensaje({ texto: 'Error al banear el teléfono.', tipo: 'error' });
+        } else {
+            setMensaje({ texto: `El número ${telefono} ha sido baneado.`, tipo: 'exito' });
+            setTimeout(() => setMensaje({ texto: '', tipo: '' }), 3000);
+        }
     }
 
     return (
         <div className="w-full min-h-screen bg-scandi-light flex flex-col font-inter">
-
-            {/* Cabecera Estilizada */}
-            <div className="w-full bg-scandi-white border-b border-scandi-darker/10 px-6 py-5 md:px-12 flex justify-between items-center shadow-sm">
-                <div>
-                    <span className="font-inter text-[10px] tracking-[0.3em] text-scandi-gray uppercase block mb-1">
-                        Romero Studio
-                    </span>
-                    <h1 className="font-cormorant text-2xl md:text-3xl text-scandi-black font-normal">
-                        Panel de <span className="text-scandi-accent">Admin</span>
-                    </h1>
-                </div>
-                <button
-                    onClick={cerrarSesion}
-                    className="font-inter text-[10px] tracking-widest uppercase text-scandi-gray hover:text-scandi-black transition-colors border-b border-transparent hover:border-scandi-black pb-0.5"
-                >
-                    Cerrar Sesión
-                </button>
-            </div>
 
             <div className="w-full max-w-3xl mx-auto flex-1 p-6 md:py-12">
 
@@ -247,8 +241,8 @@ export default function AdminPanel() {
                 {/* MENSAJES DE ESTADO */}
                 {mensaje.texto && (
                     <div className={`mb-8 p-4 text-center rounded-2xl font-light text-xs tracking-wider uppercase shadow-sm border ${mensaje.tipo === 'error' ? 'bg-red-50 text-red-700 border-red-200' :
-                            mensaje.tipo === 'info' ? 'bg-amber-50 text-amber-800 border-amber-200' :
-                                'bg-emerald-50 text-emerald-800 border-emerald-200'
+                        mensaje.tipo === 'info' ? 'bg-amber-50 text-amber-800 border-amber-200' :
+                            'bg-emerald-50 text-emerald-800 border-emerald-200'
                         }`}>
                         {mensaje.texto}
                     </div>
@@ -274,39 +268,62 @@ export default function AdminPanel() {
                         <div className="space-y-3">
                             {listaCompleta.map((cita) => {
                                 const hora = new Date(cita.fecha_hora).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                                const estaReservada = cita.estado !== 'disponible' && !cita.esBorrador
+
                                 return (
                                     <div
                                         key={cita.id}
-                                        className={`flex flex-col sm:flex-row sm:items-center justify-between p-5 rounded-2xl border transition-all ${cita.esBorrador
+                                        className={`flex flex-col p-5 rounded-2xl border transition-all ${cita.esBorrador
                                                 ? 'bg-scandi-accent/5 border-scandi-accent/40 border-dashed'
-                                                : 'bg-scandi-white border-scandi-darker/10 shadow-sm'
+                                                : estaReservada
+                                                    ? 'bg-white border-scandi-darker/20 shadow-md'
+                                                    : 'bg-scandi-white border-scandi-darker/10 shadow-sm'
                                             }`}
                                     >
-                                        <div className="flex items-center gap-4 mb-3 sm:mb-0">
-                                            <span className="font-cormorant text-2xl text-scandi-black">{hora}</span>
-                                            {cita.esBorrador && (
-                                                <span className="font-inter text-[9px] tracking-widest uppercase text-scandi-accent font-medium border border-scandi-accent/30 px-2 py-1 rounded-full">
-                                                    Borrador
+                                        {/* Fila Superior: Hora y controles */}
+                                        <div className="flex flex-col sm:flex-row sm:items-center justify-between">
+                                            <div className="flex items-center gap-4 mb-3 sm:mb-0">
+                                                <span className="font-cormorant text-2xl text-scandi-black">{hora}</span>
+                                                {cita.esBorrador && (
+                                                    <span className="font-inter text-[9px] tracking-widest uppercase text-scandi-accent font-medium border border-scandi-accent/30 px-2 py-1 rounded-full">
+                                                        Borrador
+                                                    </span>
+                                                )}
+                                            </div>
+
+                                            <div className="flex gap-4 md:gap-6 items-center justify-between sm:justify-end">
+                                                <span className="font-inter text-xs text-scandi-gray">{cita.duracion_minutos} min</span>
+
+                                                <span className={`font-inter text-[10px] tracking-widest uppercase px-3 py-1.5 rounded-full ${estaReservada ? 'bg-amber-50 text-amber-700' : 'bg-emerald-50 text-emerald-700'
+                                                    }`}>
+                                                    {cita.estado}
                                                 </span>
-                                            )}
+
+                                                <button
+                                                    onClick={() => cita.esBorrador ? eliminarBorrador(cita.id) : eliminarCitaGuardada(cita.fecha_hora)}
+                                                    className="font-inter text-[10px] tracking-widest uppercase text-scandi-gray hover:text-red-500 transition-colors ml-2"
+                                                    title="Eliminar cita"
+                                                >
+                                                    Eliminar
+                                                </button>
+                                            </div>
                                         </div>
 
-                                        <div className="flex gap-4 md:gap-6 items-center justify-between sm:justify-end">
-                                            <span className="font-inter text-xs text-scandi-gray">{cita.duracion_minutos} min</span>
-
-                                            <span className={`font-inter text-[10px] tracking-widest uppercase px-3 py-1.5 rounded-full ${cita.estado === 'disponible' ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'
-                                                }`}>
-                                                {cita.estado}
-                                            </span>
-
-                                            <button
-                                                onClick={() => cita.esBorrador ? eliminarBorrador(cita.id) : eliminarCitaGuardada(cita.fecha_hora)}
-                                                className="font-inter text-[10px] tracking-widest uppercase text-scandi-gray hover:text-red-500 transition-colors ml-2"
-                                                title="Eliminar cita"
-                                            >
-                                                Eliminar
-                                            </button>
-                                        </div>
+                                        {/* Fila Inferior: Datos del cliente (Solo si está reservada) */}
+                                        {estaReservada && (cita.nombre_cliente || cita.telefono) && (
+                                            <div className="mt-4 pt-4 border-t border-scandi-darker/10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                                                <div>
+                                                    <p className="font-inter text-sm text-scandi-black font-medium">{cita.nombre_cliente || 'Sin nombre'}</p>
+                                                    <p className="font-inter text-xs text-scandi-gray">{cita.telefono || 'Sin teléfono'}</p>
+                                                </div>
+                                                <button
+                                                    onClick={() => banearTelefono(cita.telefono, cita.nombre_cliente)}
+                                                    className="text-red-600 font-inter text-[9px] tracking-widest uppercase border border-red-200 hover:bg-red-50 px-3 py-2 rounded-xl transition-colors shrink-0"
+                                                >
+                                                    Bloquear Cliente
+                                                </button>
+                                            </div>
+                                        )}
                                     </div>
                                 )
                             })}
@@ -314,40 +331,37 @@ export default function AdminPanel() {
                     )}
                 </div>
 
-                {/* FORMULARIO DE AÑADIR */}
-                <form onSubmit={añadirBorrador} className="flex flex-col md:flex-row gap-6 items-end p-6 md:p-8 bg-scandi-white rounded-3xl border border-scandi-darker/10 shadow-sm mb-8">
-
-                    <div className="flex w-full gap-4">
-                        <div className="flex-1 min-w-0">
-                            <label className="block font-inter text-[10px] tracking-widest text-scandi-gray uppercase mb-2">Hora Inicio</label>
+                {/* FORMULARIO DE AÑADIR ADAPTADO A iOS */}
+                <form onSubmit={añadirBorrador} className="p-5 sm:p-6 md:p-8 bg-scandi-white rounded-3xl border border-scandi-darker/10 shadow-sm mb-8 w-full box-border overflow-hidden">
+                    <div className="grid grid-cols-1 sm:grid-cols-[1fr_1fr_auto] gap-4 sm:gap-6 sm:items-end w-full">
+                        <div className="w-full min-w-0 flex flex-col">
+                            <label className="block font-inter text-[10px] tracking-widest text-scandi-gray uppercase mb-2">Hora</label>
                             <input
                                 type="time"
                                 value={nuevaHora}
                                 onChange={(e) => setNuevaHora(e.target.value)}
-                                className="w-full p-3 md:p-4 border border-scandi-darker/20 rounded-2xl bg-scandi-light/50 focus:bg-scandi-white focus:ring-1 focus:ring-scandi-accent focus:border-scandi-accent outline-none transition-all font-light text-sm"
+                                className="w-full min-w-0 appearance-none py-3 px-2 md:p-4 border border-scandi-darker/20 rounded-2xl bg-scandi-light/50 focus:bg-scandi-white focus:ring-1 focus:ring-scandi-accent outline-none transition-all font-light text-sm box-border"
                                 required
                             />
                         </div>
-
-                        <div className="flex-1 min-w-0">
-                            <label className="block font-inter text-[10px] tracking-widest text-scandi-gray uppercase mb-2">Duración (min)</label>
+                        <div className="w-full min-w-0 flex flex-col">
+                            <label className="block font-inter text-[10px] tracking-widest text-scandi-gray uppercase mb-2">Minutos</label>
                             <input
                                 type="number"
                                 step="5"
                                 value={nuevaDuracion}
                                 onChange={(e) => setNuevaDuracion(e.target.value)}
-                                className="w-full p-3 md:p-4 border border-scandi-darker/20 rounded-2xl bg-scandi-light/50 focus:bg-scandi-white focus:ring-1 focus:ring-scandi-accent focus:border-scandi-accent outline-none transition-all font-light text-sm"
+                                className="w-full min-w-0 appearance-none py-3 px-2 md:p-4 border border-scandi-darker/20 rounded-2xl bg-scandi-light/50 focus:bg-scandi-white focus:ring-1 focus:ring-scandi-accent outline-none transition-all font-light text-sm box-border"
                                 required
                             />
                         </div>
+                        <button
+                            type="submit"
+                            className="w-full sm:w-auto py-3 md:py-4 px-8 bg-scandi-black text-scandi-white font-inter text-xs tracking-widest uppercase rounded-2xl hover:bg-scandi-accent hover:text-scandi-black transition-colors shadow-md box-border"
+                        >
+                            Preparar Hueco
+                        </button>
                     </div>
-
-                    <button
-                        type="submit"
-                        className="w-full md:w-auto md:px-8 bg-scandi-black text-scandi-white font-inter text-xs tracking-widest uppercase py-4 rounded-2xl hover:bg-scandi-accent hover:text-scandi-black transition-colors shadow-md shrink-0"
-                    >
-                        Preparar Hueco
-                    </button>
                 </form>
 
                 {/* PANEL DE GUARDADO (Solo visible si hay borradores) */}
