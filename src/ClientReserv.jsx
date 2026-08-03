@@ -343,6 +343,13 @@ export default function ClientView() {
                         <h3 className="font-cormorant text-3xl text-scandi-black mb-2">¡Reserva confirmada!</h3>
                         <p className="font-inter text-sm text-scandi-gray font-light mb-8">Tu cita ha sido guardada correctamente.</p>
 
+                        <div className="py-5 border-y border-scandi-darker/10 mb-8">
+                            <p className="font-inter text-[10px] tracking-widest text-scandi-gray uppercase mb-2">Te esperamos el</p>
+                            <p className="font-cormorant text-2xl md:text-3xl text-scandi-black">
+                                {formatearFecha(citaConfirmada.fecha_hora.split('T')[0])} a las {new Date(citaConfirmada.fecha_hora).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            </p>
+                        </div>
+
                         <div className="bg-scandi-light p-6 rounded-2xl border border-scandi-darker/10 mb-8 relative text-left">
                             <p className="font-inter text-[10px] tracking-widest text-scandi-gray uppercase mb-2">Código de cancelación</p>
 
