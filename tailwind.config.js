@@ -7,11 +7,11 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Semantic tokens (user-provided alternate palette)
-        primary: '#242424',
-        accent: '#2B4C3B',
-        secondary: '#8C5A35',
-        background: '#FAFAFA',
+        // Semantic tokens (original palette)
+        primary: '#1A1A1A',
+        secondary: '#E6E3DF',
+        accent: '#B99D7A',
+        background: '#F2F2F0',
         surface: '#FFFFFF',
         gray: '#6E6E6E',
         darker: '#C8C2B7',

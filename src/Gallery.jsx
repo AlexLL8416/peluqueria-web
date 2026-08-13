@@ -6,28 +6,28 @@ export default function Gallery() {
     // Sustituye las URLs por las rutas de tus imágenes (ej: '/images/corte-1.jpg')
     const galleryImages = [
         {
-            url: "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?q=80&w=1974&auto=format&fit=crop",
-            alt: "Corte clásico texturizado"
+            url: "https://images.unsplash.com/photo-1554519934-e32b1629d9ee?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+            alt: "Corte y ondas"
         },
         {
-            url: "https://images.unsplash.com/photo-1593702275687-f8b402bf1fb5?q=80&w=1974&auto=format&fit=crop",
-            alt: "Detalle de arreglo de barba"
+            url: "https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&w=800&q=80",
+            alt: "Peinado y color"
         },
         {
-            url: "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?q=80&w=1974&auto=format&fit=crop",
-            alt: "Corte degradado o fade"
+            url: "https://images.unsplash.com/photo-1617391654484-2894196c2cc9?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D?auto=format&fit=crop&w=800&q=80",
+            alt: "Tratamiento capilar"
         },
         {
-            url: "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?q=80&w=2074&auto=format&fit=crop",
-            alt: "Ritual de toalla caliente y afeitado"
+            url: "https://images.unsplash.com/photo-1580618672591-eb180b1a973f?auto=format&fit=crop&w=800&q=80",
+            alt: "Tijeras en acción"
         },
         {
-            url: "https://images.unsplash.com/photo-1621605815971-fbc98d665033?q=80&w=1974&auto=format&fit=crop",
-            alt: "Perfilado y tijera"
+            url: "https://images.unsplash.com/photo-1617897903246-719242758050?auto=format&fit=crop&w=800&q=80",
+            alt: "Aplicación de tinte"
         },
         {
-            url: "https://images.unsplash.com/photo-1605497788044-5a32c7078486?q=80&w=1974&auto=format&fit=crop",
-            alt: "Herramientas de barbería y acabado final"
+            url: "https://images.unsplash.com/photo-1519699047748-de8e457a634e?auto=format&fit=crop&w=800&q=80",
+            alt: "Peinado de evento"
         }
     ];
 

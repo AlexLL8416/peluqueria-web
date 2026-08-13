@@ -24,7 +24,7 @@ export const APP_CONFIG = {
     heroTitle: "Ejemplo",
     heroSubtitle: "Peluquería",
     heroTagline: "Reserva tu cita",
-    aboutIntro: "Soy Alberto Romero, fundador del estudio...",
+    aboutIntro: "Somos dos peluqueras apasionadas por el arte del cabello y la belleza. Nuestro objetivo es ofrecerte un servicio de calidad, donde cada detalle cuenta para que te sientas y luzcas increíble.",
     footerText: "© {year} Ejemplo Peluquería",
   },
   theme: {

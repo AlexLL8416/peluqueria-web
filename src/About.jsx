@@ -11,7 +11,7 @@ export default function About() {
                     <div className="aspect-3/4 md:aspect-4/5 rounded-2rem overflow-hidden shadow-xl relative">
                         <img
                             // Aquí debes poner la ruta de tu foto real, por ejemplo: "/images/retrato.jpg"
-                            src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?q=80&w=1974&auto=format&fit=crop"
+                            src="https://images.unsplash.com/photo-1617690825204-069678e3a2d5?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D?auto=format&fit=crop&w=800&q=80"
                             alt="Retrato del fundador"
                             className="w-full h-full object-cover md:grayscale rounded-2xl opacity-90 hover:md:grayscale-0 hover:opacity-100 transition-all duration-700"
                         />
