@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { supabase } from './supabase'
 
+import APP_CONFIG from './config/tenant.js'
+
 export default function AdminPanel() {
     const [fecha, setFecha] = useState(new Date().toISOString().split('T')[0])
     const [citasDelDia, setCitasDelDia] = useState([])
@@ -207,15 +209,15 @@ export default function AdminPanel() {
     }
 
     return (
-        <div className="w-full min-h-screen bg-scandi-light flex flex-col font-inter">
+        <div className="w-full min-h-screen bg-background flex flex-col font-inter">
 
             <div className="w-full max-w-3xl mx-auto flex-1 p-6 md:py-12">
 
                 {/* Navegación de Días */}
-                <div className="flex items-center justify-between mb-10 pb-6 border-b border-scandi-darker/10">
+                <div className="flex items-center justify-between mb-10 pb-6 border-b border-darker/10">
                     <button
                         onClick={() => cambiarDia(-1)}
-                        className="font-inter text-xs tracking-widest text-scandi-gray hover:text-scandi-black uppercase transition-colors"
+                        className="font-inter text-xs tracking-widest text-gray hover:text-primary uppercase transition-colors"
                     >
                         &larr; Anterior
                     </button>
@@ -227,12 +229,12 @@ export default function AdminPanel() {
                             if (citasBorrador.length > 0 && !window.confirm("Perderás los cambios sin guardar. ¿Continuar?")) return;
                             setFecha(e.target.value)
                         }}
-                        className="font-cormorant text-2xl md:text-3xl text-scandi-black text-center bg-transparent outline-none cursor-pointer hover:text-scandi-accent transition-colors"
+                        className="font-cormorant text-2xl md:text-3xl text-primary text-center bg-transparent outline-none cursor-pointer hover:text-accent transition-colors"
                     />
 
                     <button
                         onClick={() => cambiarDia(1)}
-                        className="font-inter text-xs tracking-widest text-scandi-gray hover:text-scandi-black uppercase transition-colors"
+                        className="font-inter text-xs tracking-widest text-gray hover:text-primary uppercase transition-colors"
                     >
                         Siguiente &rarr;
                     </button>
@@ -250,16 +252,16 @@ export default function AdminPanel() {
 
                 {/* Lista de Citas */}
                 <div className="mb-12 space-y-4">
-                    <h3 className="font-inter text-[10px] tracking-widest text-scandi-gray uppercase px-2 mb-6">
+                    <h3 className="font-inter text-[10px] tracking-widest text-gray uppercase px-2 mb-6">
                         Citas para este día
                     </h3>
 
                     {listaCompleta.length === 0 ? (
-                        <div className="text-center py-12 bg-scandi-white rounded-3xl border border-scandi-darker/10 shadow-sm flex flex-col items-center">
-                            <p className="font-inter text-sm text-scandi-gray font-light mb-6">No hay citas creadas para este día.</p>
+                        <div className="text-center py-12 bg-surface rounded-3xl border border-darker/10 shadow-sm flex flex-col items-center">
+                            <p className="font-inter text-sm text-gray font-light mb-6">No hay citas creadas para este día.</p>
                             <button
                                 onClick={copiarHorarioAnterior}
-                                className="font-inter text-[10px] tracking-widest uppercase border border-scandi-darker/20 text-scandi-black py-3 px-6 rounded-2xl hover:border-scandi-black transition-all"
+                                className="font-inter text-[10px] tracking-widest uppercase border border-darker/20 text-primary py-3 px-6 rounded-2xl hover:border-primary transition-all"
                             >
                                 Copiar horario de ayer
                             </button>
@@ -273,26 +275,25 @@ export default function AdminPanel() {
                                 return (
                                     <div
                                         key={cita.id}
-                                        className={`flex flex-col p-5 rounded-2xl border transition-all ${cita.esBorrador
-                                                ? 'bg-scandi-accent/5 border-scandi-accent/40 border-dashed'
+                                            className={`flex flex-col p-5 rounded-2xl border transition-all ${cita.esBorrador
+                                                ? 'bg-accent/5 border-accent/40 border-dashed'
                                                 : estaReservada
-                                                    ? 'bg-white border-scandi-darker/20 shadow-md'
-                                                    : 'bg-scandi-white border-scandi-darker/10 shadow-sm'
-                                            }`}
-                                    >
+                                                    ? 'bg-surface border-darker/20 shadow-md'
+                                                    : 'bg-surface border-darker/10 shadow-sm'
+                                                }`}>
                                         {/* Fila Superior: Hora y controles */}
                                         <div className="flex flex-col sm:flex-row sm:items-center justify-between">
                                             <div className="flex items-center gap-4 mb-3 sm:mb-0">
-                                                <span className="font-cormorant text-2xl text-scandi-black">{hora}</span>
+                                                <span className="font-cormorant text-2xl text-primary">{hora}</span>
                                                 {cita.esBorrador && (
-                                                    <span className="font-inter text-[9px] tracking-widest uppercase text-scandi-accent font-medium border border-scandi-accent/30 px-2 py-1 rounded-full">
+                                                    <span className="font-inter text-[9px] tracking-widest uppercase text-accent font-medium border border-accent/30 px-2 py-1 rounded-full">
                                                         Borrador
                                                     </span>
                                                 )}
                                             </div>
 
                                             <div className="flex gap-4 md:gap-6 items-center justify-between sm:justify-end">
-                                                <span className="font-inter text-xs text-scandi-gray">{cita.duracion_minutos} min</span>
+                                                <span className="font-inter text-xs text-gray">{cita.duracion_minutos} min</span>
 
                                                 <span className={`font-inter text-[10px] tracking-widest uppercase px-3 py-1.5 rounded-full ${estaReservada ? 'bg-amber-50 text-amber-700' : 'bg-emerald-50 text-emerald-700'
                                                     }`}>
@@ -301,7 +302,7 @@ export default function AdminPanel() {
 
                                                 <button
                                                     onClick={() => cita.esBorrador ? eliminarBorrador(cita.id) : eliminarCitaGuardada(cita.fecha_hora)}
-                                                    className="font-inter text-[10px] tracking-widest uppercase text-scandi-gray hover:text-red-500 transition-colors ml-2"
+                                                    className="font-inter text-[10px] tracking-widest uppercase text-gray hover:text-red-500 transition-colors ml-2"
                                                     title="Eliminar cita"
                                                 >
                                                     Eliminar
@@ -311,10 +312,10 @@ export default function AdminPanel() {
 
                                         {/* Fila Inferior: Datos del cliente (Solo si está reservada) */}
                                         {estaReservada && (cita.nombre_cliente || cita.telefono) && (
-                                            <div className="mt-4 pt-4 border-t border-scandi-darker/10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                                            <div className="mt-4 pt-4 border-t border-darker/10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                                                 <div>
-                                                    <p className="font-inter text-sm text-scandi-black font-medium">{cita.nombre_cliente || 'Sin nombre'}</p>
-                                                    <p className="font-inter text-xs text-scandi-gray">{cita.telefono || 'Sin teléfono'}</p>
+                                                    <p className="font-inter text-sm text-primary font-medium">{cita.nombre_cliente || 'Sin nombre'}</p>
+                                                    <p className="font-inter text-xs text-gray">{cita.telefono || 'Sin teléfono'}</p>
                                                 </div>
                                                 <button
                                                     onClick={() => banearTelefono(cita.telefono, cita.nombre_cliente)}
@@ -332,32 +333,32 @@ export default function AdminPanel() {
                 </div>
 
                 {/* FORMULARIO DE AÑADIR ADAPTADO A iOS */}
-                <form onSubmit={añadirBorrador} className="p-5 sm:p-6 md:p-8 bg-scandi-white rounded-3xl border border-scandi-darker/10 shadow-sm mb-8 w-full box-border overflow-hidden">
+                <form onSubmit={añadirBorrador} className="p-5 sm:p-6 md:p-8 bg-surface rounded-3xl border border-darker/10 shadow-sm mb-8 w-full box-border overflow-hidden">
                     <div className="grid grid-cols-1 sm:grid-cols-[1fr_1fr_auto] gap-4 sm:gap-6 sm:items-end w-full">
                         <div className="w-full min-w-0 flex flex-col">
-                            <label className="block font-inter text-[10px] tracking-widest text-scandi-gray uppercase mb-2">Hora</label>
+                            <label className="block font-inter text-[10px] tracking-widest text-gray uppercase mb-2">Hora</label>
                             <input
                                 type="time"
                                 value={nuevaHora}
                                 onChange={(e) => setNuevaHora(e.target.value)}
-                                className="w-full min-w-0 appearance-none py-3 px-2 md:p-4 border border-scandi-darker/20 rounded-2xl bg-scandi-light/50 focus:bg-scandi-white focus:ring-1 focus:ring-scandi-accent outline-none transition-all font-light text-sm box-border"
+                                className="w-full min-w-0 appearance-none py-3 px-2 md:p-4 border border-darker/20 rounded-2xl bg-background/50 focus:bg-surface focus:ring-1 focus:ring-accent outline-none transition-all font-light text-sm box-border"
                                 required
                             />
                         </div>
                         <div className="w-full min-w-0 flex flex-col">
-                            <label className="block font-inter text-[10px] tracking-widest text-scandi-gray uppercase mb-2">Minutos</label>
+                            <label className="block font-inter text-[10px] tracking-widest text-gray uppercase mb-2">Minutos</label>
                             <input
                                 type="number"
                                 step="5"
                                 value={nuevaDuracion}
                                 onChange={(e) => setNuevaDuracion(e.target.value)}
-                                className="w-full min-w-0 appearance-none py-3 px-2 md:p-4 border border-scandi-darker/20 rounded-2xl bg-scandi-light/50 focus:bg-scandi-white focus:ring-1 focus:ring-scandi-accent outline-none transition-all font-light text-sm box-border"
+                                className="w-full min-w-0 appearance-none py-3 px-2 md:p-4 border border-darker/20 rounded-2xl bg-background/50 focus:bg-surface focus:ring-1 focus:ring-accent outline-none transition-all font-light text-sm box-border"
                                 required
                             />
                         </div>
                         <button
                             type="submit"
-                            className="w-full sm:w-auto py-3 md:py-4 px-8 bg-scandi-black text-scandi-white font-inter text-xs tracking-widest uppercase rounded-2xl hover:bg-scandi-accent hover:text-scandi-black transition-colors shadow-md box-border"
+                            className="w-full sm:w-auto py-3 md:py-4 px-8 bg-primary text-surface font-inter text-xs tracking-widest uppercase rounded-2xl hover:bg-accent hover:text-primary transition-colors shadow-md box-border"
                         >
                             Preparar Hueco
                         </button>
@@ -366,13 +367,13 @@ export default function AdminPanel() {
 
                 {/* PANEL DE GUARDADO (Solo visible si hay borradores) */}
                 {citasBorrador.length > 0 && (
-                    <div className="bg-scandi-black p-8 rounded-3xl text-center shadow-lg border border-scandi-black">
-                        <p className="font-inter text-sm text-scandi-white/80 font-light mb-6">
-                            Tienes <span className="text-scandi-accent font-medium">{citasBorrador.length}</span> hueco(s) listo(s) para subir.
+                    <div className="bg-primary p-8 rounded-3xl text-center shadow-lg border border-primary">
+                        <p className="font-inter text-sm text-surface/80 font-light mb-6">
+                            Tienes <span className="text-accent font-medium">{citasBorrador.length}</span> hueco(s) listo(s) para subir.
                         </p>
                         <button
                             onClick={guardarEnBaseDeDatos}
-                            className="w-full bg-scandi-accent text-scandi-black font-inter text-xs tracking-widest uppercase py-4 px-6 rounded-2xl hover:bg-scandi-white transition-colors shadow-md"
+                            className="w-full bg-accent text-primary font-inter text-xs tracking-widest uppercase py-4 px-6 rounded-2xl hover:bg-surface transition-colors shadow-md"
                         >
                             Guardar {citasBorrador.length} citas en la Base de Datos
                         </button>

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { supabase } from './supabase'
+import { APP_CONFIG } from './config/tenant'
 
 export default function ClientCancel() {
     const [codigo, setCodigo] = useState('')
@@ -53,26 +54,26 @@ export default function ClientCancel() {
     }
 
     return (
-        <div className="w-full min-h-screen bg-scandi-light flex flex-col justify-center items-center p-6 font-inter relative">
+        <div className="w-full min-h-screen bg-background flex flex-col justify-center items-center p-6 font-inter relative">
 
             {/* Botón para volver a la web principal */}
             <a
                 href="/"
-                className="absolute top-8 left-8 md:left-12 scale-175 font-inter text-[10px] tracking-widest text-scandi-gray hover:text-scandi-black uppercase flex items-center gap-2 transition-colors"
+                className="absolute top-8 left-8 md:left-12 scale-175 font-inter text-[10px] tracking-widest text-gray hover:text-primary uppercase flex items-center gap-2 transition-colors"
             >
                 &larr; <span className="hidden md:inline">Volver</span>
             </a>
 
-            <div className="w-full max-w-md bg-scandi-white p-8 md:p-10 rounded-3xl shadow-sm border border-scandi-darker/10">
+            <div className="w-full max-w-md bg-surface p-8 md:p-10 rounded-3xl shadow-sm border border-darker/10">
 
                 <div className="text-center mb-8">
-                    <span className="font-inter text-[10px] tracking-[0.3em] text-scandi-gray uppercase mb-2 block">
-                        Romero Studio
+                    <span className="font-inter text-[10px] tracking-[0.3em] text-gray uppercase mb-2 block">
+                        {APP_CONFIG.site.name}
                     </span>
-                    <h2 className="font-cormorant text-3xl md:text-4xl text-scandi-black font-normal mb-3">
-                        Cancelar <span className="text-scandi-accent">cita</span>
+                    <h2 className="font-cormorant text-3xl md:text-4xl text-primary font-normal mb-3">
+                        Cancelar <span className="text-accent">cita</span>
                     </h2>
-                    <p className="font-inter text-xs text-scandi-gray font-light leading-relaxed">
+                    <p className="font-inter text-xs text-gray font-light leading-relaxed">
                         Introduce el código que guardaste al hacer la reserva para liberar tu hueco.
                     </p>
                 </div>
@@ -89,7 +90,7 @@ export default function ClientCancel() {
 
                 <form onSubmit={cancelarCita} className="space-y-6">
                     <div>
-                        <label className="block font-inter text-[10px] tracking-widest text-scandi-gray uppercase mb-2">
+                        <label className="block font-inter text-[10px] tracking-widest text-gray uppercase mb-2">
                             Código de cancelación
                         </label>
                         <input
@@ -97,7 +98,7 @@ export default function ClientCancel() {
                             value={codigo}
                             onChange={(e) => setCodigo(e.target.value)}
                             placeholder="Ej. 9bc8f49d-..."
-                            className="w-full p-4 border border-scandi-darker/20 rounded-2xl bg-scandi-light/50 focus:bg-scandi-white focus:ring-1 focus:ring-scandi-black focus:border-scandi-black outline-none transition-all font-mono text-sm text-scandi-black placeholder-scandi-gray/40"
+                            className="w-full p-4 border border-darker/20 rounded-2xl bg-background/50 focus:bg-surface focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all font-mono text-sm text-primary placeholder-gray/40"
                             required
                         />
                     </div>
@@ -106,8 +107,8 @@ export default function ClientCancel() {
                         type="submit"
                         disabled={cargando}
                         className={`w-full font-inter text-xs tracking-widest uppercase py-4 px-6 rounded-2xl transition-all shadow-md ${cargando
-                            ? 'bg-scandi-darker/10 text-scandi-gray cursor-not-allowed'
-                            : 'bg-scandi-black text-scandi-white hover:bg-red-950'
+                            ? 'bg-darker/10 text-gray cursor-not-allowed'
+                            : 'bg-primary text-surface hover:bg-red-950'
                             }`}
                     >
                         {cargando ? 'Procesando...' : 'Cancelar mi reserva'}
@@ -115,10 +116,10 @@ export default function ClientCancel() {
                 </form>
 
                 {/* NUEVO: Mensaje de recuperación o ayuda */}
-                <div className="mt-8 pt-6 border-t border-scandi-darker/10 text-center">
-                    <p className="font-inter text-xs text-scandi-gray font-light leading-relaxed">
+                <div className="mt-8 pt-6 border-t border-darker/10 text-center">
+                    <p className="font-inter text-xs text-gray font-light leading-relaxed">
                         ¿Has perdido tu código? <br className="md:hidden" />
-                        Llámanos o envíanos un WhatsApp al <a href="tel:+34600123456" className="text-scandi-black font-medium hover:text-scandi-accent transition-colors block md:inline mt-1 md:mt-0">600 123 456</a>
+                        Llámanos o envíanos un WhatsApp al <a href="tel:+34600123456" className="text-primary font-medium hover:text-accent transition-colors block md:inline mt-1 md:mt-0">600 123 456</a>
                     </p>
                 </div>
             </div>

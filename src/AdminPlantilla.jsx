@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { supabase } from './supabase'
+import { APP_CONFIG } from './config/tenant'
 
 export default function AdminPlantilla() {
     const [plantilla, setPlantilla] = useState([])
@@ -119,37 +120,37 @@ export default function AdminPlantilla() {
 
                 {/* PARTE 1: PLANTILLA DE HORAS (Arriba en móvil, Izquierda en PC) */}
                 <div className="w-full lg:w-1/2 flex flex-col gap-6">
-                    <h3 className="font-inter text-[10px] tracking-widest text-scandi-gray uppercase mb-2 px-2">
+                    <h3 className="font-inter text-[10px] tracking-widest text-gray uppercase mb-2 px-2">
                         1. Define los huecos del día
                     </h3>
 
                     {/* Formulario de añadir horas */}
-                    <form onSubmit={añadirHueco} className="p-5 md:p-6 bg-scandi-white rounded-3xl border border-scandi-darker/10 shadow-sm w-full box-border overflow-hidden">
+                    <form onSubmit={añadirHueco} className="p-5 md:p-6 bg-surface rounded-3xl border border-darker/10 shadow-sm w-full box-border overflow-hidden">
                         <div className="grid grid-cols-1 sm:grid-cols-[1fr_1fr_auto] gap-4 sm:gap-6 sm:items-end w-full">
                             <div className="w-full min-w-0 flex flex-col">
-                                <label className="block font-inter text-[10px] tracking-widest text-scandi-gray uppercase mb-2">Hora Inicio</label>
+                                <label className="block font-inter text-[10px] tracking-widest text-gray uppercase mb-2">Hora Inicio</label>
                                 <input
                                     type="time"
                                     value={nuevaHora}
                                     onChange={(e) => setNuevaHora(e.target.value)}
-                                    className="w-full min-w-0 appearance-none py-3 px-2 md:p-4 border border-scandi-darker/20 rounded-2xl bg-scandi-light/50 focus:bg-scandi-white focus:ring-1 focus:ring-scandi-accent outline-none text-sm transition-all box-border"
+                                    className="w-full min-w-0 appearance-none py-3 px-2 md:p-4 border border-darker/20 rounded-2xl bg-background/50 focus:bg-surface focus:ring-1 focus:ring-accent outline-none text-sm transition-all box-border"
                                     required
                                 />
                             </div>
                             <div className="w-full min-w-0 flex flex-col">
-                                <label className="block font-inter text-[10px] tracking-widest text-scandi-gray uppercase mb-2">Minutos</label>
+                                <label className="block font-inter text-[10px] tracking-widest text-gray uppercase mb-2">Minutos</label>
                                 <input
                                     type="number"
                                     step="5"
                                     value={nuevaDuracion}
                                     onChange={(e) => setNuevaDuracion(e.target.value)}
-                                    className="w-full min-w-0 appearance-none py-3 px-2 md:p-4 border border-scandi-darker/20 rounded-2xl bg-scandi-light/50 focus:bg-scandi-white focus:ring-1 focus:ring-scandi-accent outline-none text-sm transition-all box-border"
+                                    className="w-full min-w-0 appearance-none py-3 px-2 md:p-4 border border-darker/20 rounded-2xl bg-background/50 focus:bg-surface focus:ring-1 focus:ring-accent outline-none text-sm transition-all box-border"
                                     required
                                 />
                             </div>
                             <button
                                 type="submit"
-                                className="w-full sm:w-auto bg-scandi-black text-scandi-white font-inter text-xs tracking-widest uppercase py-3 md:py-4 px-8 rounded-2xl hover:bg-scandi-accent hover:text-scandi-black transition-colors shadow-md box-border"
+                                className="w-full sm:w-auto bg-primary text-surface font-inter text-xs tracking-widest uppercase py-3 md:py-4 px-8 rounded-2xl hover:bg-accent hover:text-primary transition-colors shadow-md box-border"
                             >
                                 Añadir
                             </button>
@@ -158,18 +159,18 @@ export default function AdminPlantilla() {
 
                     <div className="space-y-3 mt-2">
                         {plantilla.length === 0 ? (
-                            <div className="text-center py-12 bg-scandi-white rounded-3xl border border-scandi-darker/10 border-dashed">
-                                <p className="font-inter text-sm text-scandi-gray font-light">
+                            <div className="text-center py-12 bg-surface rounded-3xl border border-darker/10 border-dashed">
+                                <p className="font-inter text-sm text-gray font-light">
                                     No hay huecos añadidos a la plantilla.
                                 </p>
                             </div>
                         ) : (
                             plantilla.map((hueco) => (
-                                <div key={hueco.id} className="flex items-center justify-between p-5 rounded-2xl bg-scandi-white border border-scandi-darker/10 shadow-sm transition-all hover:border-scandi-darker/30">
-                                    <span className="font-cormorant text-2xl text-scandi-black">{hueco.hora}</span>
+                                <div key={hueco.id} className="flex items-center justify-between p-5 rounded-2xl bg-surface border border-darker/10 shadow-sm transition-all hover:border-darker/30">
+                                    <span className="font-cormorant text-2xl text-primary">{hueco.hora}</span>
                                     <div className="flex items-center gap-6">
-                                        <span className="font-inter text-xs text-scandi-gray">{hueco.duracion} min</span>
-                                        <button onClick={() => eliminarHueco(hueco.id)} className="font-inter text-[10px] tracking-widest uppercase text-scandi-gray hover:text-red-500 transition-colors">
+                                        <span className="font-inter text-xs text-gray">{hueco.duracion} min</span>
+                                        <button onClick={() => eliminarHueco(hueco.id)} className="font-inter text-[10px] tracking-widest uppercase text-gray hover:text-red-500 transition-colors">
                                             Eliminar
                                         </button>
                                     </div>
@@ -181,22 +182,22 @@ export default function AdminPlantilla() {
 
                 {/* PARTE 2: CALENDARIO (Abajo en móvil, Derecha en PC) */}
                 <div className="w-full lg:w-1/2 flex flex-col gap-6">
-                    <h3 className="font-inter text-[10px] tracking-widest text-scandi-gray uppercase mb-2 px-2">
+                    <h3 className="font-inter text-[10px] tracking-widest text-gray uppercase mb-2 px-2">
                         2. Aplícalos al calendario
                     </h3>
 
-                    <div className="bg-scandi-white p-5 md:p-8 rounded-3xl border border-scandi-darker/10 shadow-sm">
+                    <div className="bg-surface p-5 md:p-8 rounded-3xl border border-darker/10 shadow-sm">
                         <div className="flex justify-between items-center mb-8">
-                            <button onClick={() => cambiarMes(-1)} className="text-scandi-gray hover:text-scandi-black p-2 text-xl transition-colors">&larr;</button>
-                            <h4 className="font-cormorant text-xl md:text-2xl text-scandi-black uppercase font-medium tracking-wide">
+                            <button onClick={() => cambiarMes(-1)} className="text-gray hover:text-primary p-2 text-xl transition-colors">&larr;</button>
+                            <h4 className="font-cormorant text-xl md:text-2xl text-primary uppercase font-medium tracking-wide">
                                 {meses[fechaCalendario.getMonth()]} {fechaCalendario.getFullYear()}
                             </h4>
-                            <button onClick={() => cambiarMes(1)} className="text-scandi-gray hover:text-scandi-black p-2 text-xl transition-colors">&rarr;</button>
+                            <button onClick={() => cambiarMes(1)} className="text-gray hover:text-primary p-2 text-xl transition-colors">&rarr;</button>
                         </div>
 
                         <div className="grid grid-cols-7 gap-1 md:gap-2 mb-3">
                             {['L', 'M', 'X', 'J', 'V', 'S', 'D'].map(d => (
-                                <div key={d} className="text-center font-inter text-[10px] md:text-xs tracking-widest text-scandi-gray uppercase pb-2">{d}</div>
+                                <div key={d} className="text-center font-inter text-[10px] md:text-xs tracking-widest text-gray uppercase pb-2">{d}</div>
                             ))}
                         </div>
 
@@ -216,8 +217,8 @@ export default function AdminPlantilla() {
                                         key={dia}
                                         onClick={() => toggleDia(dia)}
                                         className={`aspect-square flex items-center justify-center rounded-xl font-inter text-xs md:text-sm transition-all ${seleccionado
-                                            ? 'bg-scandi-black text-scandi-white shadow-md scale-105'
-                                            : 'bg-scandi-light text-scandi-black hover:border hover:border-scandi-accent border border-transparent'
+                                            ? 'bg-primary text-surface shadow-md scale-105'
+                                            : 'bg-background text-primary hover:border hover:border-accent border border-transparent'
                                             }`}
                                     >
                                         {dia}
@@ -235,8 +236,8 @@ export default function AdminPlantilla() {
                     onClick={generarCitas}
                     disabled={plantilla.length === 0 || diasSeleccionados.length === 0}
                     className={`w-full lg:w-auto px-8 md:px-12 py-5 rounded-2xl font-inter text-xs tracking-widest uppercase transition-all shadow-md ${plantilla.length > 0 && diasSeleccionados.length > 0
-                        ? 'bg-scandi-accent text-scandi-black hover:bg-scandi-black hover:text-scandi-white cursor-pointer'
-                        : 'bg-scandi-gray/20 text-scandi-gray cursor-not-allowed'
+                        ? 'bg-accent text-primary hover:bg-primary hover:text-surface cursor-pointer'
+                        : 'bg-gray/20 text-gray cursor-not-allowed'
                         }`}
                 >
                     Subir {plantilla.length * diasSeleccionados.length} citas al servidor

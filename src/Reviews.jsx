@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
+import { APP_CONFIG } from './config/tenant';
 
 export default function Reviews() {
     const reviewsList = [
@@ -52,21 +53,21 @@ export default function Reviews() {
     const extendedReviews = [...reviewsList, reviewsList[0], reviewsList[1]];
 
     return (
-        <section className="bg-scandi-base py-24 md:py-24 px-6 md:px-12 overflow-hidden">
+        <section className="bg-background py-24 md:py-24 px-6 md:px-12 overflow-hidden">
             <div className="max-w-7xl mx-auto flex flex-col items-center">
 
                 {/* Cabecera */}
                 <div className="text-center mb-16">
-                    <span className="font-inter text-[10px] tracking-[0.3em] text-scandi-gray uppercase mb-4 block">
+                    <span className="font-inter text-[10px] tracking-[0.3em] text-gray uppercase mb-4 block">
                         Reseñas
                     </span>
-                    <h2 className="font-cormorant text-5xl md:text-6xl text-scandi-black leading-tight">
-                        Lo que dicen <span className="text-scandi-accent">nuestros clientes</span>
+                    <h2 className="font-cormorant text-5xl md:text-6xl text-primary leading-tight">
+                        Lo que dicen <span className="text-accent">nuestros clientes</span>
                     </h2>
                 </div>
 
                 {/* Contenedor principal de la caja blanca */}
-                <div className="relative w-full max-w-5xl bg-scandi-white rounded-3xl p-8 md:p-12 shadow-sm border border-scandi-darker/20">
+                <div className="relative w-full max-w-5xl bg-surface rounded-3xl p-8 md:p-12 shadow-sm border border-darker/20">
 
                     <div className="overflow-hidden -mx-4 px-4 pb-4">
 
@@ -98,22 +99,22 @@ export default function Reviews() {
                                     <div className="flex flex-col h-full">
                                         {/* Estrellas */}
                                         <div className="flex gap-1 mb-6">
-                                            {[...Array(5)].map((_, i) => (
+                                                {[...Array(5)].map((_, i) => (
                                                 <Star
                                                     key={i}
                                                     size={16}
-                                                    className={i < review.rating ? "text-scandi-accent fill-scandi-accent" : "text-scandi-darker/30 fill-scandi-darker/30"}
+                                                    className={i < review.rating ? "text-accent fill-accent" : "text-darker/30 fill-darker/30"}
                                                 />
                                             ))}
                                         </div>
 
                                         {/* Texto de la reseña */}
-                                        <p className="font-inter text-sm text-scandi-gray font-light leading-relaxed mb-8 grow">
+                                        <p className="font-inter text-sm text-gray font-light leading-relaxed mb-8 grow">
                                             "{review.text}"
                                         </p>
 
                                         {/* Nombre del cliente */}
-                                        <h4 className="font-cormorant text-xl text-scandi-black mt-auto border-t border-scandi-darker/30 pt-4">
+                                        <h4 className="font-cormorant text-xl text-primary mt-auto border-t border-darker/30 pt-4">
                                             {review.name}
                                         </h4>
                                     </div>
@@ -127,7 +128,7 @@ export default function Reviews() {
 
                         <button
                             onClick={prevReview}
-                            className="w-10 h-10 rounded-full border border-scandi-darker/50 flex items-center justify-center text-scandi-black hover:bg-scandi-black hover:text-scandi-white transition-colors"
+                            className="w-10 h-10 rounded-full border border-darker/50 flex items-center justify-center text-primary hover:bg-darker hover:text-surface transition-colors"
                             aria-label="Reseña anterior"
                         >
                             <ChevronLeft size={20} strokeWidth={1.5} />
@@ -140,8 +141,8 @@ export default function Reviews() {
                                     key={index}
                                     onClick={() => setCurrentIndex(index)}
                                     className={`h-2 rounded-full transition-all duration-500 ${currentIndex === index
-                                        ? 'w-6 bg-scandi-accent'
-                                        : 'w-2 bg-scandi-darker/30 hover:bg-scandi-darker/60'
+                                        ? 'w-6 bg-accent'
+                                        : 'w-2 bg-darker/30 hover:bg-darker/60'
                                         }`}
                                     aria-label={`Ir a la reseña ${index + 1}`}
                                 />
@@ -150,7 +151,7 @@ export default function Reviews() {
 
                         <button
                             onClick={nextReview}
-                            className="w-10 h-10 rounded-full border border-scandi-darker/50 flex items-center justify-center text-scandi-black hover:bg-scandi-black hover:text-scandi-white transition-colors"
+                            className="w-10 h-10 rounded-full border border-darker/50 flex items-center justify-center text-primary hover:bg-darker hover:text-surface transition-colors"
                             aria-label="Reseña siguiente"
                         >
                             <ChevronRight size={20} strokeWidth={1.5} />

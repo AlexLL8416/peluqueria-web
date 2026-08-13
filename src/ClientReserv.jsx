@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from './supabase'
 import { Camera } from 'lucide-react'
+import APP_CONFIG from './config/tenant.js'
 
 export default function ClientView() {
     const [citasDisponibles, setCitasDisponibles] = useState({})
@@ -171,8 +172,8 @@ export default function ClientView() {
 
     if (cargando) {
         return (
-            <div className="min-h-screen bg-scandi-light flex items-center justify-center">
-                <div className="text-center p-10 font-inter text-scandi-gray font-light">
+            <div className="min-h-screen bg-background flex items-center justify-center">
+                <div className="text-center p-10 font-inter text-gray font-light">
                     Buscando huecos disponibles...
                 </div>
             </div>
@@ -180,25 +181,25 @@ export default function ClientView() {
     }
 
     return (
-        <div className="w-full min-h-screen bg-scandi-light flex flex-col font-inter">
+        <div className="w-full min-h-screen bg-background flex flex-col font-inter">
 
             {/* Cabecera Estilizada con botón de regreso general */}
-            <div className="w-full bg-scandi-white border-b border-scandi-darker/10 p-8 shadow-sm text-center relative flex items-center justify-center">
+            <div className="w-full bg-surface border-b border-darker/10 p-8 shadow-sm text-center relative flex items-center justify-center">
 
                 {/* Botón de regresar a la Home */}
                 <a
                     href="/"
-                    className="absolute left-8 md:left-12 scale-175 font-inter text-[10px] tracking-widest text-scandi-gray hover:text-scandi-black uppercase flex items-center gap-2 transition-colors"
+                    className="absolute left-8 md:left-12 scale-175 font-inter text-[10px] tracking-widest text-gray hover:text-primary uppercase flex items-center gap-2 transition-colors"
                 >
                     &larr; <span className="hidden md:inline">Volver</span>
                 </a>
 
                 <div>
-                    <span className="font-inter text-[10px] tracking-[0.3em] text-scandi-gray uppercase mb-2 block">
-                        Romero Studio
+                    <span className="font-inter text-[10px] tracking-[0.3em] text-gray uppercase mb-2 block">
+                        {APP_CONFIG.site.name}
                     </span>
-                    <h1 className="font-cormorant text-4xl text-scandi-black font-normal">
-                        Reserva tu <span className="text-scandi-accent">cita</span>
+                    <h1 className="font-cormorant text-4xl text-primary font-normal">
+                        {APP_CONFIG.copy.heroTagline} <span className="text-accent">cita</span>
                     </h1>
                 </div>
             </div>
@@ -219,15 +220,15 @@ export default function ClientView() {
                 {!citaSeleccionada && !citaConfirmada && (
                     <>
                         {diasDisponibles.length === 0 ? (
-                            <div className="text-center p-12 bg-scandi-white rounded-3xl border border-scandi-darker/10 shadow-sm mt-4">
-                                <p className="font-inter text-sm text-scandi-gray font-light">
+                            <div className="text-center p-12 bg-surface rounded-3xl border border-darker/10 shadow-sm mt-4">
+                                <p className="font-inter text-sm text-gray font-light">
                                     Lo sentimos, no hay citas disponibles en este momento.
                                 </p>
                             </div>
                         ) : (
                             <div className="space-y-8">
                                 <div>
-                                    <h2 className="font-inter text-xs tracking-[0.2em] text-scandi-gray uppercase mb-4 px-1">
+                                    <h2 className="font-inter text-xs tracking-[0.2em] text-gray uppercase mb-4 px-1">
                                         ¿Qué día prefieres?
                                     </h2>
 
@@ -237,8 +238,8 @@ export default function ClientView() {
                                                 key={dia}
                                                 onClick={() => setDiaSeleccionado(dia)}
                                                 className={`whitespace-nowrap px-6 py-4 rounded-2xl font-inter text-xs tracking-widest uppercase transition-all shrink-0 border ${diaSeleccionado === dia
-                                                    ? 'bg-scandi-black text-scandi-light border-scandi-black shadow-md'
-                                                    : 'bg-scandi-white text-scandi-black border-scandi-darker/20 hover:border-scandi-black'
+                                                        ? 'bg-primary text-background border-primary shadow-md'
+                                                            : 'bg-surface text-primary border-darker/20 hover:border-primary'
                                                     }`}
                                             >
                                                 {formatearFecha(dia)}
@@ -248,7 +249,7 @@ export default function ClientView() {
                                 </div>
 
                                 <div>
-                                    <h2 className="font-inter text-xs tracking-[0.2em] text-scandi-gray uppercase mb-4 px-1">
+                                    <h2 className="font-inter text-xs tracking-[0.2em] text-gray uppercase mb-4 px-1">
                                         Horas disponibles
                                     </h2>
 
@@ -259,10 +260,10 @@ export default function ClientView() {
                                                 <button
                                                     key={cita.id}
                                                     onClick={() => setCitaSeleccionada(cita)}
-                                                    className="bg-scandi-white border border-scandi-darker/20 hover:border-scandi-accent text-scandi-black py-5 px-4 rounded-2xl shadow-sm transition-all duration-300 flex flex-col items-center justify-center gap-1 group"
+                                                    className="bg-surface border border-darker/20 hover:border-accent text-primary py-5 px-4 rounded-2xl shadow-sm transition-all duration-300 flex flex-col items-center justify-center gap-1 group"
                                                 >
-                                                    <span className="font-cormorant text-2xl group-hover:text-scandi-accent transition-colors">{hora}</span>
-                                                    <span className="font-inter text-[10px] tracking-widest text-scandi-gray uppercase">{cita.duracion_minutos} min</span>
+                                                    <span className="font-cormorant text-2xl group-hover:text-accent transition-colors">{hora}</span>
+                                                    <span className="font-inter text-[10px] tracking-widest text-gray uppercase">{cita.duracion_minutos} min</span>
                                                 </button>
                                             )
                                         })}
@@ -275,25 +276,25 @@ export default function ClientView() {
 
                 {/* FLUJO 2: FORMULARIO DE CONFIRMACIÓN */}
                 {citaSeleccionada && !mensaje.texto.includes('éxito') && (
-                    <div className="bg-scandi-white p-8 md:p-10 rounded-3xl shadow-sm border border-scandi-darker/10 mt-2">
+                    <div className="bg-surface p-8 md:p-10 rounded-3xl shadow-sm border border-darker/10 mt-2">
 
                         <button
                             onClick={() => setCitaSeleccionada(null)}
-                            className="font-inter text-xs tracking-widest text-scandi-gray hover:text-scandi-black uppercase mb-8 flex items-center gap-2 transition-colors"
+                            className="font-inter text-xs tracking-widest text-gray hover:text-primary uppercase mb-8 flex items-center gap-2 transition-colors"
                         >
                             &larr; Cambiar hora
                         </button>
 
-                        <div className="mb-8 pb-6 border-b border-scandi-darker/10">
-                            <p className="font-inter text-[10px] tracking-widest text-scandi-gray uppercase mb-1">Cita seleccionada</p>
-                            <p className="font-cormorant text-2xl md:text-3xl text-scandi-black">
+                        <div className="mb-8 pb-6 border-b border-darker/10">
+                            <p className="font-inter text-[10px] tracking-widest text-gray uppercase mb-1">Cita seleccionada</p>
+                            <p className="font-cormorant text-2xl md:text-3xl text-primary">
                                 {formatearFecha(citaSeleccionada.fecha_hora.split('T')[0])} a las {new Date(citaSeleccionada.fecha_hora).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                             </p>
                         </div>
 
                         <form onSubmit={confirmarReserva} className="space-y-6">
                             <div>
-                                <label className="block font-inter text-[10px] tracking-widest text-scandi-gray uppercase mb-2">Tu Nombre</label>
+                                <label className="block font-inter text-[10px] tracking-widest text-gray uppercase mb-2">Tu Nombre</label>
                                 <input
                                     type="text"
                                     value={nombre}
@@ -301,13 +302,13 @@ export default function ClientView() {
                                     placeholder="Ej. Alejandro"
                                     pattern="[A-Za-záéíóúÁÉÍÓÚñÑ\s]+"
                                     title="Solo se permiten letras, espacios y acentos"
-                                    className="w-full p-4 border border-scandi-darker/20 rounded-2xl bg-scandi-light/50 focus:bg-scandi-white focus:ring-1 focus:ring-scandi-accent focus:border-scandi-accent outline-none transition-all font-light text-sm"
+                                    className="w-full p-4 border border-darker/20 rounded-2xl bg-background/50 focus:bg-surface focus:ring-1 focus:ring-accent focus:border-accent outline-none transition-all font-light text-sm"
                                     required
                                 />
                             </div>
 
                             <div>
-                                <label className="block font-inter text-[10px] tracking-widest text-scandi-gray uppercase mb-2">Tu Teléfono</label>
+                                <label className="block font-inter text-[10px] tracking-widest text-gray uppercase mb-2">Tu Teléfono</label>
                                 <input
                                     type="tel"
                                     value={telefono}
@@ -315,7 +316,7 @@ export default function ClientView() {
                                     placeholder="Ej. 600 123 456"
                                     pattern="[0-9\s+()-]+"
                                     title="Introduce un número de teléfono válido"
-                                    className="w-full p-4 border border-scandi-darker/20 rounded-2xl bg-scandi-light/50 focus:bg-scandi-white focus:ring-1 focus:ring-scandi-accent focus:border-scandi-accent outline-none transition-all font-light text-sm"
+                                    className="w-full p-4 border border-darker/20 rounded-2xl bg-background/50 focus:bg-surface focus:ring-1 focus:ring-accent focus:border-accent outline-none transition-all font-light text-sm"
                                     required
                                 />
                             </div>
@@ -323,7 +324,7 @@ export default function ClientView() {
                             <button
                                 type="submit"
                                 disabled={guardando}
-                                className={`w-full font-inter text-xs tracking-widest uppercase py-4 px-6 rounded-2xl shadow-md mt-4 transition-colors ${guardando ? 'bg-scandi-gray text-scandi-white cursor-not-allowed' : 'bg-scandi-black text-scandi-white hover:bg-scandi-accent hover:text-scandi-black'
+                                className={`w-full font-inter text-xs tracking-widest uppercase py-4 px-6 rounded-2xl shadow-md mt-4 transition-colors ${guardando ? 'bg-gray text-surface cursor-not-allowed' : 'bg-primary text-surface hover:bg-accent hover:text-primary'
                                     }`}
                             >
                                 {guardando ? 'Procesando...' : 'Confirmar Reserva'}
@@ -334,32 +335,32 @@ export default function ClientView() {
 
                 {/* FLUJO 3: TICKET DE CONFIRMACIÓN */}
                 {citaConfirmada && (
-                    <div className="bg-scandi-white p-8 md:p-10 rounded-3xl shadow-sm border border-scandi-darker/10 mt-2 text-center">
+                    <div className="bg-surface p-8 md:p-10 rounded-3xl shadow-sm border border-darker/10 mt-2 text-center">
 
-                        <div className="w-16 h-16 bg-scandi-accent/20 text-scandi-accent rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-light">
+                        <div className="w-16 h-16 bg-accent/20 text-accent rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-light">
                             ✓
                         </div>
 
-                        <h3 className="font-cormorant text-3xl text-scandi-black mb-2">¡Reserva confirmada!</h3>
-                        <p className="font-inter text-sm text-scandi-gray font-light mb-8">Tu cita ha sido guardada correctamente.</p>
+                        <h3 className="font-cormorant text-3xl text-primary mb-2">¡Reserva confirmada!</h3>
+                        <p className="font-inter text-sm text-gray font-light mb-8">Tu cita ha sido guardada correctamente.</p>
 
-                        <div className="py-5 border-y border-scandi-darker/10 mb-8">
-                            <p className="font-inter text-[10px] tracking-widest text-scandi-gray uppercase mb-2">Te esperamos el</p>
-                            <p className="font-cormorant text-2xl md:text-3xl text-scandi-black">
+                        <div className="py-5 border-y border-darker/10 mb-8">
+                            <p className="font-inter text-[10px] tracking-widest text-gray uppercase mb-2">Te esperamos el</p>
+                            <p className="font-cormorant text-2xl md:text-3xl text-primary">
                                 {formatearFecha(citaConfirmada.fecha_hora.split('T')[0])} a las {new Date(citaConfirmada.fecha_hora).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                             </p>
                         </div>
 
-                        <div className="bg-scandi-light p-6 rounded-2xl border border-scandi-darker/10 mb-8 relative text-left">
-                            <p className="font-inter text-[10px] tracking-widest text-scandi-gray uppercase mb-2">Código de cancelación</p>
+                        <div className="bg-background p-6 rounded-2xl border border-darker/10 mb-8 relative text-left">
+                            <p className="font-inter text-[10px] tracking-widest text-gray uppercase mb-2">Código de cancelación</p>
 
-                            <p className="text-xs font-mono text-scandi-black break-all bg-scandi-white p-4 border border-scandi-darker/10 rounded-xl shadow-inner">
+                            <p className="text-xs font-mono text-primary break-all bg-surface p-4 border border-darker/10 rounded-xl shadow-inner">
                                 {citaConfirmada.id}
                             </p>
 
-                            <div className="mt-4 p-4 bg-scandi-accent/10 border border-scandi-accent/30 rounded-xl flex gap-3 items-start">
-                                <Camera className="text-lg w-16 h-16 text-scandi-base fill-scandi-accent" />
-                                <p className="font-inter text-xs text-scandi-black/80 font-light leading-relaxed">
+                            <div className="mt-4 p-4 bg-accent/10 border border-accent/30 rounded-xl flex gap-3 items-start">
+                                <Camera className="text-lg w-16 h-16 text-secondary fill-accent" />
+                                <p className="font-inter text-xs text-primary/80 font-light leading-relaxed">
                                     ¡Haz una captura de pantalla a este código! Lo necesitarás si en algún momento deseas cancelar tu cita.
                                 </p>
                             </div>
@@ -367,7 +368,7 @@ export default function ClientView() {
 
                         <button
                             onClick={() => window.location.href = '/'}
-                            className="w-full bg-scandi-black text-scandi-white font-inter text-xs tracking-widest uppercase py-4 px-6 rounded-2xl hover:bg-scandi-accent hover:text-scandi-black transition-colors shadow-md"
+                            className="w-full bg-primary text-surface font-inter text-xs tracking-widest uppercase py-4 px-6 rounded-2xl hover:bg-accent hover:text-primary transition-colors shadow-md"
                         >
                             Volver a la web
                         </button>
