@@ -5,37 +5,37 @@ export default function Services() {
     // Aumentamos un poco el tamaño del icono (size={32}) al quitarle el fondo circular
     const servicesList = [
         {
-            name: 'Corte de Pelo',
-            price: '20€',
+            name: 'Corte Mujer',
+            price: '28€',
             icon: <Scissors className="text-accent" strokeWidth={1} size={32} />
         },
         {
-            name: 'Arreglo de Barba',
-            price: '15€',
+            name: 'Peinado y Styling',
+            price: '35€',
             icon: <Brush className="text-accent" strokeWidth={1} size={32} />
         },
         {
-            name: 'Servicio Completo',
-            price: '30€',
+            name: 'Color y Mechas',
+            price: '60€',
             icon: <Sparkles className="text-accent" strokeWidth={1} size={32} />
         }
     ];
 
     const productsList = [
         {
-            name: 'Cera Mate Texturizadora',
-            price: '15€',
-            description: 'Fijación media con acabado natural. Ideal para cabellos finos.'
+            name: 'Champú Voluminizador',
+            price: '18€',
+            description: 'Aporta cuerpo y movimiento a cabellos finos, con extractos botánicos.'
         },
         {
-            name: 'Aceite para Barba',
+            name: 'Acondicionador Nutritivo',
             price: '20€',
-            description: 'Hidratación profunda con aceites naturales.'
+            description: 'Desenreda, nutre y protege el cabello seco o dañado.'
         },
         {
-            name: 'Champú Purificante',
-            price: '16€',
-            description: 'Para uso diario que limpia en profundidad.'
+            name: 'Mascarilla Reparadora',
+            price: '25€',
+            description: 'Tratamiento intensivo para recuperar brillo y elasticidad.'
         }
     ];
 

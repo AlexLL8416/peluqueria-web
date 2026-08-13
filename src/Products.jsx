@@ -5,38 +5,38 @@ import { APP_CONFIG } from './config/tenant';
 const listaProductos = [
     {
         id: 1,
-        nombre: 'Cera de Fijación Mate',
+        nombre: 'Champú Voluminizador',
         precio: '18.00 €',
-        imagen: 'https://images.unsplash.com/photo-1620916297397-a4a5402a3c6c?q=80&w=800&auto=format&fit=crop',
-        descripcion: 'Cera de arcilla con acabado mate y fijación fuerte. Ideal para dar textura y volumen sin apelmazar el cabello. Se elimina fácilmente con agua.'
+        imagen: 'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?q=80&w=800&auto=format&fit=crop',
+        descripcion: 'Aporta cuerpo y movimiento a cabellos finos, con extractos botánicos que respetan la fibra capilar.'
     },
     {
         id: 2,
-        nombre: 'Aceite Esencial para Barba',
-        precio: '22.50 €',
-        imagen: 'https://images.unsplash.com/photo-1621607512214-68297480165e?q=80&w=800&auto=format&fit=crop',
-        descripcion: 'Fórmula nutritiva enriquecida con aceite de argán y jojoba. Hidrata la piel debajo del vello, suaviza la barba y deja un ligero aroma a madera de cedro.'
+        nombre: 'Acondicionador Nutritivo',
+        precio: '20.00 €',
+        imagen: 'https://images.unsplash.com/photo-1620916297397-a4a5402a3c6c?q=80&w=800&auto=format&fit=crop',
+        descripcion: 'Desenreda y nutre intensamente, recuperando suavidad y brillo en cabellos secos o dañados.'
     },
     {
         id: 3,
-        nombre: 'Champú Fortificante',
-        precio: '15.00 €',
-        imagen: 'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?q=80&w=800&auto=format&fit=crop',
-        descripcion: 'Champú de uso diario libre de sulfatos y parabenos. Formulado con extractos naturales para fortalecer el folículo y limpiar el cuero cabelludo en profundidad.'
+        nombre: 'Mascarilla Reparadora',
+        precio: '25.00 €',
+        imagen: 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?q=80&w=800&auto=format&fit=crop',
+        descripcion: 'Tratamiento intensivo para recuperar elasticidad, reducir el encrespamiento y aportar un brillo saludable.'
     },
     {
         id: 4,
-        nombre: 'Polvos Texturizadores',
-        precio: '16.00 €',
-        imagen: 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?q=80&w=800&auto=format&fit=crop',
-        descripcion: 'Polvo ultraligero que aporta un volumen extremo desde la raíz y un acabado 100% mate. Perfecto para cortes desordenados o cabellos finos.'
+        nombre: 'Sérum de Brillo',
+        precio: '22.00 €',
+        imagen: 'https://images.unsplash.com/photo-1621607512214-68297480165e?q=80&w=800&auto=format&fit=crop',
+        descripcion: 'Fórmula ligera que controla el frizz y aporta un acabado brillante sin engrasar.'
     },
     {
         id: 5,
-        nombre: 'Gomina',
-        precio: '10.00 €',
+        nombre: 'Spray Texturizante',
+        precio: '16.00 €',
         imagen: 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?q=80&w=800&auto=format&fit=crop',
-        descripcion: 'Descripción de prueba'
+        descripcion: 'Aporta textura y fijación flexible para peinados con movimiento y volumen natural.'
     }
 ]
 
