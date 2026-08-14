@@ -5,28 +5,28 @@ import { APP_CONFIG } from './config/tenant';
 export default function Reviews() {
     const reviewsList = [
         {
-            name: 'Alejandro L.',
-            text: 'El mejor corte que me han hecho en años. El trato es excepcional y el local tiene un ambiente muy relajante. Totalmente recomendado.',
+            name: 'María P.',
+            text: 'Me hicieron un balayage perfecto, el tono quedó natural y luminoso. El equipo escuchó exactamente lo que quería.',
             rating: 5
         },
         {
-            name: 'David M.',
-            text: 'Profesionalidad en estado puro. Fui a arreglarme la barba y salí encantado con los productos y la atención al detalle.',
+            name: 'Lucía R.',
+            text: 'Fantástica experiencia. El corte y el peinado para mi evento duraron todo el día sin perder forma.',
             rating: 5
         },
         {
-            name: 'Carlos R.',
-            text: 'Un espacio único. Se nota la pasión que le ponen a cada detalle, desde que entras hasta que sales con tu nuevo look.',
+            name: 'Sofía G.',
+            text: 'La mascarilla nutritiva me devolvió el brillo al cabello tras meses de tratamientos. Muy recomendable.',
+            rating: 5
+        },
+        {
+            name: 'Ana C.',
+            text: 'Profesionales y amables. Me explicaron cada paso del tratamiento y los resultados fueron excepcionales.',
             rating: 4
         },
         {
-            name: 'Javier G.',
-            text: 'Muy buen servicio y puntualidad. El masaje capilar que te dan durante el lavado es otro nivel. Muy relajante.',
-            rating: 5
-        },
-        {
-            name: 'Miguel A.',
-            text: 'Estilo impecable. Supieron entender exactamente lo que buscaba para mi cambio de imagen. 100% recomendable.',
+            name: 'Elena M.',
+            text: 'Servicio impecable: pedí un cambio de look y el resultado superó mis expectativas. Volveré sin duda.',
             rating: 5
         }
     ];

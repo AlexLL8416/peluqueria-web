@@ -98,7 +98,7 @@ export default function Navbar() {
                             <h3 className="text-[10px] tracking-widest text-gray uppercase mb-6">Servicios</h3>
                             <nav className="flex flex-col space-y-4 text-primary text-lg md:text-base font-light">
                                 <a href="#services" onClick={() => setIsOpen(false)} className="hover:text-accent cursor-pointer transition-colors">Cortes</a>
-                                <a href="#services" onClick={() => setIsOpen(false)} className="hover:text-accent cursor-pointer transition-colors">Afeitado</a>
+                                <a href="#services" onClick={() => setIsOpen(false)} className="hover:text-accent cursor-pointer transition-colors">Tratamientos</a>
                                 <a href="/productos" onClick={() => setIsOpen(false)} className="hover:text-accent cursor-pointer transition-colors">Productos</a>
                             </nav>
                         </div>

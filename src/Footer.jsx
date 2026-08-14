@@ -20,7 +20,7 @@ export default function Footer() {
                         <h3 className="text-[10px] tracking-widest text-gray uppercase mb-6">Servicios</h3>
                         <ul className="space-y-4 text-primary text-lg md:text-base font-light">
                             <li><a href="#services" className="hover:text-accent transition-colors">Cortes</a></li>
-                            <li><a href="#services" className="hover:text-accent transition-colors">Afeitado</a></li>
+                            <li><a href="#services" className="hover:text-accent transition-colors">Tratamientos</a></li>
                             <li><a href="/productos" className="hover:text-accent transition-colors">Productos</a></li>
                         </ul>
                     </div>
