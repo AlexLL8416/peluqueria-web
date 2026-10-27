@@ -8,9 +8,6 @@ export default function Studio() {
 
                 {/* Columna Izquierda: Información Principal y Horario */}
                 <div className="lg:w-1/2 flex flex-col w-full">
-                    <span className="font-inter text-[10px] tracking-[0.3em] text-gray uppercase mb-4 block">
-                        Nuestro Espacio
-                    </span>
 
                     <h2 className="font-cormorant text-5xl md:text-6xl text-primary leading-tight mb-12">
                         Donde cuidamos de ti

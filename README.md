@@ -45,7 +45,7 @@ Esta aplicación está construida para ser vendida e implementada en múltiples 
 
 Para adaptarlo a un nuevo cliente, solo es necesario modificar dos archivos:
 1. `src/config/tenant.js`: Contiene el nombre del negocio, enlaces de redes sociales, textos del *Hero*, etc.
-2. `tailwind.config.js`: Contiene 5 variables de color. Cambiando la paleta hexadecimal aquí, toda la UI de la aplicación muta de manera coherente para reflejar la identidad corporativa del nuevo local.
+2. `src/index.css` (bloque `@theme`): Contiene las variables de color. Cambiando la paleta hexadecimal aquí, toda la UI de la aplicación muta de manera coherente para reflejar la identidad corporativa del nuevo local.
 
 ---
 

@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
-import { APP_CONFIG } from './config/tenant';
 
 export default function Reviews() {
     const reviewsList = [
@@ -58,9 +57,6 @@ export default function Reviews() {
 
                 {/* Cabecera */}
                 <div className="text-center mb-16">
-                    <span className="font-inter text-[10px] tracking-[0.3em] text-gray uppercase mb-4 block">
-                        Reseñas
-                    </span>
                     <h2 className="font-cormorant text-5xl md:text-6xl text-primary leading-tight">
                         Lo que dicen <span className="text-accent">nuestros clientes</span>
                     </h2>

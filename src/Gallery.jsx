@@ -39,9 +39,6 @@ export default function Gallery() {
                 {/* Cabecera de la Galería */}
                 <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
                     <div>
-                        <span className="font-inter text-[10px] tracking-[0.3em] text-gray uppercase mb-4 block">
-                            Galería
-                        </span>
                         <h2 className="font-cormorant text-5xl md:text-6xl text-primary leading-tight">
                             Nuestro <span className="text-accent">trabajo</span>
                         </h2>

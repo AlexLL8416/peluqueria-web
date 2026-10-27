@@ -46,9 +46,6 @@ export default function Services() {
                 {/* Columna Izquierda: Título y texto (Sticky en desktop) */}
                     <div className="lg:w-1/3 lg:pr-8">
                     <div className="sticky top-40">
-                        <span className="font-inter text-[10px] tracking-[0.3em] text-gray uppercase mb-4 block">
-                            Servicios y Productos
-                        </span>
 
                         <h2 className="font-cormorant text-5xl md:text-6xl text-primary leading-tight mb-6">
                             Cuidado <br className="hidden lg:block" />

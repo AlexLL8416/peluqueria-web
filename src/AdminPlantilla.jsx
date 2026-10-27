@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { supabase } from './supabase'
+import APP_CONFIG from './config/tenant.js'
+import { madridAISO } from './utils'
 
 export default function AdminPlantilla() {
     const [plantilla, setPlantilla] = useState([])
@@ -81,7 +83,7 @@ export default function AdminPlantilla() {
         const citasParaSubir = []
         diasSeleccionados.forEach(diaString => {
             plantilla.forEach(hueco => {
-                const fechaHora = new Date(`${diaString}T${hueco.hora}`).toISOString()
+                const fechaHora = madridAISO(diaString, hueco.hora)
                 citasParaSubir.push({
                     fecha_hora: fechaHora,
                     estado: 'disponible',
@@ -129,9 +131,7 @@ export default function AdminPlantilla() {
                             <div className="w-full min-w-0 flex flex-col">
                                 <label className="block font-inter text-[10px] tracking-widest text-gray uppercase mb-2">Servicio</label>
                                 <select value={nuevoTipo} onChange={(e) => setNuevoTipo(e.target.value)} className="w-full min-w-0 py-3 px-2 md:p-4 border border-darker/20 rounded-2xl bg-background/50 focus:bg-surface focus:ring-1 focus:ring-accent outline-none text-sm transition-all box-border" required>
-                                    <option value="Corte de pelo">Corte de pelo</option>
-                                    <option value="Peinado y Styling">Peinado y Styling</option>
-                                    <option value="Color y Mechas">Color y Mechas</option>
+                                    {APP_CONFIG.services.map(srv => <option key={srv} value={srv}>{srv}</option>)}
                                 </select>
                             </div>
                             <button type="submit" className="w-full sm:w-auto bg-primary text-surface font-inter text-xs tracking-widest uppercase py-3 md:py-4 px-6 rounded-2xl hover:bg-accent hover:text-primary transition-colors shadow-md box-border">

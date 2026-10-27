@@ -20,9 +20,6 @@ export default function About() {
 
                 {/* Columna Derecha: Presentación y Contacto */}
                 <div className="w-full md:w-1/2 flex flex-col">
-                    <span className="font-inter text-[10px] tracking-[0.3em] text-primary/70 uppercase mb-4 block">
-                        Sobre Nosotros
-                    </span>
 
                     <h2 className="font-cormorant text-5xl md:text-6xl text-primary leading-tight mb-8">
                         El arte detrás <br /> del detalle

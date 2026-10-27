@@ -8,9 +8,6 @@ export default function Hero() {
   
         <div className="flex flex-col items-center md:items-start text-center md:text-left mt-10 md:mt-0">
 
-          <span className="font-inter text-[10px] tracking-[0.3em] text-gray uppercase mb-6 block">
-            Cuidando el detalle
-          </span>
 
           <h1 className="font-cormorant text-6xl md:text-7xl lg:text-8xl text-primary leading-[1.1] mb-8">
             {APP_CONFIG.copy.heroTitle} <br /> <span className="bold text-accent">{APP_CONFIG.copy.heroSubtitle}</span>

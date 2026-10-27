@@ -1,22 +1,17 @@
 import { useState, useEffect } from 'react'
 import { supabase } from './supabase'
-import APP_CONFIG from './config/tenant.js'
 
 export default function AdminBaneados() {
     const [baneados, setBaneados] = useState([])
     const [mensaje, setMensaje] = useState({ texto: '', tipo: '' })
     const [cargando, setCargando] = useState(true)
 
-    useEffect(() => {
-        cargarBaneados()
-    }, [])
+    const pedirBaneados = () => supabase
+        .from('baneados')
+        .select('*')
+        .order('created_at', { ascending: false })
 
-    const cargarBaneados = async () => {
-        const { data, error } = await supabase
-            .from('baneados')
-            .select('*')
-            .order('created_at', { ascending: false })
-
+    const mostrarBaneados = ({ data, error }) => {
         if (error) {
             console.error("Error:", error)
         } else {
@@ -24,6 +19,10 @@ export default function AdminBaneados() {
         }
         setCargando(false)
     }
+
+    useEffect(() => {
+        pedirBaneados().then(mostrarBaneados)
+    }, [])
 
     const desbanear = async (id, telefono) => {
         const seguro = window.confirm(`¿Quieres perdonar al número ${telefono} y dejar que vuelva a reservar?`)

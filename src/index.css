@@ -12,3 +12,8 @@
       --font-cormorant: "Cormorant Garamond", serif;
       --font-inter: "Inter", sans-serif;
     }
+/* Superficies del navegador con la paleta de la marca */
+::selection { background: color-mix(in srgb, var(--color-accent) 35%, transparent); color: var(--color-primary); }
+html { accent-color: var(--color-primary); caret-color: var(--color-accent); }
+:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; border-radius: 4px; }
+a { text-underline-offset: 3px; }

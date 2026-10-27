@@ -8,7 +8,7 @@ export default function Navbar() {
 
     useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 20);
-        window.addEventListener('scroll', handleScroll);
+        window.addEventListener('scroll', handleScroll, { passive: true });
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
@@ -56,10 +56,10 @@ export default function Navbar() {
                     {/* Sección Derecha: Botón Reservar + Menú Hamburguesa */}
                     <div className="flex items-center z-50">
                         {/* Contenedor animado del botón Reservar */}
-                        <div className={`hidden md:flex items-center overflow-hidden transition-all duration-700 ease-in-out ${scrolled || isOpen ? 'max-w-0 opacity-0' : 'max-w-50 opacity-100'}`}>
+                        <div className={`flex items-center overflow-hidden transition-all duration-700 ease-in-out ${isOpen ? 'max-w-0 opacity-0' : scrolled ? 'max-w-50 opacity-100' : 'max-w-0 opacity-0 md:max-w-50 md:opacity-100'}`}>
                             <a
                                 href="/reservar"
-                                className={`mr-3 md:mr-6 bg-accent text-surface px-5 py-2.5 rounded-full font-inter text-[10px] tracking-widest uppercase hover:bg-primary hover:shadow-md transition-all duration-700 whitespace-nowrap block ${scrolled || isOpen ? 'translate-x-full' : 'translate-x-0'} `}
+                                className={`mr-3 md:mr-6 bg-accent text-surface px-5 py-2.5 rounded-full font-inter text-[10px] tracking-widest uppercase hover:bg-primary hover:shadow-md transition-all duration-700 whitespace-nowrap block ${isOpen ? 'translate-x-full' : 'translate-x-0'} ${scrolled ? 'shadow-md' : ''}`}
                             >
                                 Reservar
                             </a>
@@ -68,6 +68,8 @@ export default function Navbar() {
                         {/* Menú Hamburguesa */}
                         <button
                             onClick={() => setIsOpen(!isOpen)}
+                            aria-label={isOpen ? 'Cerrar menú' : 'Abrir menú'}
+                            aria-expanded={isOpen}
                             className="text-primary hover:text-accent transition-colors p-1"
                         >
                             {isOpen ? <X size={24} strokeWidth={1.5} /> : <Menu size={24} strokeWidth={1.5} className={`w-10 h-10 md:w-12 md:h-12 p-2.5 rounded-full object-contain transition-all duration-700 ${scrolled && !isOpen

@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
 import { supabase } from './supabase'
+import APP_CONFIG from './config/tenant.js'
+import { normalizarTelefono, telefonoValido, horaMadrid, madridAISO, rangoDiaMadrid, sumarDias, hoyMadrid } from './utils'
 
 export default function AdminPanel() {
-    const [fecha, setFecha] = useState(new Date().toISOString().split('T')[0])
+    const [fecha, setFecha] = useState(hoyMadrid)
     const [citasDelDia, setCitasDelDia] = useState([])
     const [citasBorrador, setCitasBorrador] = useState([])
 
@@ -17,32 +19,6 @@ export default function AdminPanel() {
 
     const [mensaje, setMensaje] = useState({ texto: '', tipo: '' })
 
-    useEffect(() => {
-        cargarCitas(fecha)
-        setCitasBorrador([])
-        setCitaEditando(null) // Reseteamos la edición al cambiar de día
-    }, [fecha])
-
-    const cargarCitas = async (dia) => {
-        const inicioDia = `${dia}T00:00:00.000Z`
-        const finDia = `${dia}T23:59:59.999Z`
-
-        const { data, error } = await supabase
-            .from('citas')
-            .select('*')
-            .gte('fecha_hora', inicioDia)
-            .lte('fecha_hora', finDia)
-            .order('fecha_hora', { ascending: true })
-
-        if (error) {
-            console.error("Error al cargar citas:", error)
-            return
-        }
-
-        setCitasDelDia(data)
-        calcularSiguienteHueco(data, [])
-    }
-
     const calcularSiguienteHueco = (citasGuardadas, borradores) => {
         const todasLasCitas = [...citasGuardadas, ...borradores]
 
@@ -52,20 +28,54 @@ export default function AdminPanel() {
         }
 
         const ultimaCita = todasLasCitas[todasLasCitas.length - 1]
-        const fechaFin = new Date(ultimaCita.fecha_hora)
-        fechaFin.setMinutes(fechaFin.getMinutes() + ultimaCita.duracion_minutos)
+        const fechaFin = new Date(ultimaCita.fecha_hora).getTime() + ultimaCita.duracion_minutos * 60000
 
-        setNuevaHora(fechaFin.toTimeString().substring(0, 5))
+        setNuevaHora(horaMadrid(fechaFin))
         setNuevaDuracion(ultimaCita.duracion_minutos)
         setNuevoTipo(ultimaCita.tipo)
     }
 
+    const pedirCitas = (dia) => {
+        const [inicioDia, finDia] = rangoDiaMadrid(dia)
+        return supabase
+            .from('citas')
+            .select('*')
+            .gte('fecha_hora', inicioDia)
+            .lt('fecha_hora', finDia)
+            .order('fecha_hora', { ascending: true })
+    }
+
+    const mostrarCitas = ({ data, error }) => {
+        if (error) {
+            console.error("Error al cargar citas:", error)
+            return
+        }
+
+        setCitasDelDia(data)
+        calcularSiguienteHueco(data, [])
+    }
+
+    const cargarCitas = (dia) => pedirCitas(dia).then(mostrarCitas)
+
+    useEffect(() => {
+        pedirCitas(fecha).then(mostrarCitas)
+        // eslint-disable-next-line react-hooks/exhaustive-deps -- solo recarga al cambiar de día
+    }, [fecha])
+
+    // Al cambiar de día se descartan los borradores y la edición en curso.
+    const irADia = (dia) => {
+        if (citasBorrador.length > 0 && !window.confirm("Tienes citas sin guardar. Si cambias de día se perderán. ¿Continuar?")) return
+        setCitasBorrador([])
+        setCitaEditando(null)
+        setFecha(dia)
+    }
+
     const añadirBorrador = (e) => {
         e.preventDefault()
-        const fechaHoraFormateada = new Date(`${fecha}T${nuevaHora}`).toISOString()
+        const fechaHoraFormateada = madridAISO(fecha, nuevaHora)
 
         const nuevoBorrador = {
-            id: `temp-${Date.now()}`,
+            id: `temp-${crypto.randomUUID()}`,
             fecha_hora: fechaHoraFormateada,
             estado: 'disponible',
             duracion_minutos: parseInt(nuevaDuracion),
@@ -81,18 +91,13 @@ export default function AdminPanel() {
     const copiarHorarioAnterior = async () => {
         setMensaje({ texto: 'Buscando horario de ayer...', tipo: 'info' })
 
-        const fechaActual = new Date(fecha)
-        fechaActual.setDate(fechaActual.getDate() - 1)
-        const diaAnterior = fechaActual.toISOString().split('T')[0]
-
-        const inicioAyer = `${diaAnterior}T00:00:00.000Z`
-        const finAyer = `${diaAnterior}T23:59:59.999Z`
+        const [inicioAyer, finAyer] = rangoDiaMadrid(sumarDias(fecha, -1))
 
         const { data, error } = await supabase
             .from('citas')
             .select('*')
             .gte('fecha_hora', inicioAyer)
-            .lte('fecha_hora', finAyer)
+            .lt('fecha_hora', finAyer)
             .order('fecha_hora', { ascending: true })
 
         if (error || data.length === 0) {
@@ -101,13 +106,11 @@ export default function AdminPanel() {
             return
         }
 
-        const nuevosBorradores = data.map((cita, index) => {
-            const fechaVieja = new Date(cita.fecha_hora)
-            const horaString = fechaVieja.toTimeString().substring(0, 5)
-            const nuevaFechaHora = new Date(`${fecha}T${horaString}`).toISOString()
+        const nuevosBorradores = data.map((cita) => {
+            const nuevaFechaHora = madridAISO(fecha, horaMadrid(cita.fecha_hora))
 
             return {
-                id: `temp-copy-${Date.now()}-${index}`,
+                id: `temp-${crypto.randomUUID()}`,
                 fecha_hora: nuevaFechaHora,
                 estado: 'disponible',
                 duracion_minutos: cita.duracion_minutos,
@@ -128,17 +131,17 @@ export default function AdminPanel() {
         calcularSiguienteHueco(citasDelDia, nuevosBorradores)
     }
 
-    const eliminarCitaGuardada = async (fechaHora) => {
+    const eliminarCitaGuardada = async (id) => {
         const seguro = window.confirm("¿Seguro que quieres eliminar esta cita de la base de datos?");
         if (!seguro) return;
 
-        const { error } = await supabase.from('citas').delete().eq('fecha_hora', fechaHora);
+        const { error } = await supabase.from('citas').delete().eq('id', id);
         if (error) {
             setMensaje({ texto: 'Error al eliminar la cita.', tipo: 'error' });
             return;
         }
 
-        const nuevasCitas = citasDelDia.filter(cita => cita.fecha_hora !== fechaHora);
+        const nuevasCitas = citasDelDia.filter(cita => cita.id !== id);
         setCitasDelDia(nuevasCitas);
         calcularSiguienteHueco(nuevasCitas, citasBorrador);
         setMensaje({ texto: 'Cita eliminada correctamente.', tipo: 'exito' });
@@ -167,21 +170,13 @@ export default function AdminPanel() {
         }
     }
 
-    const cambiarDia = (dias) => {
-        if (citasBorrador.length > 0) {
-            const seguro = window.confirm("Tienes citas sin guardar. Si cambias de día se perderán. ¿Continuar?")
-            if (!seguro) return
-        }
-        const d = new Date(fecha)
-        d.setDate(d.getDate() + dias)
-        setFecha(d.toISOString().split('T')[0])
-    }
+    const cambiarDia = (dias) => irADia(sumarDias(fecha, dias))
 
     const banearTelefono = async (telefono, nombre) => {
         if (!telefono) return;
         if (!window.confirm(`¿Seguro que quieres bloquear a ${nombre || 'este cliente'} (${telefono})?`)) return;
 
-        const { error } = await supabase.from('baneados').insert([{ telefono: telefono }]);
+        const { error } = await supabase.from('baneados').insert([{ telefono: normalizarTelefono(telefono) }]);
         if (error) {
             setMensaje({ texto: 'Error al banear el teléfono.', tipo: 'error' });
         } else {
@@ -207,21 +202,31 @@ export default function AdminPanel() {
 
     const guardarEdicion = async (citaId) => {
         const nombreTrim = editDatos.nombre_cliente.trim()
-        const telefonoTrim = editDatos.telefono.trim()
+        const telefonoTrim = normalizarTelefono(editDatos.telefono)
+
+        if (telefonoTrim && !telefonoValido(telefonoTrim)) {
+            setMensaje({ texto: 'El teléfono debe tener 9 dígitos.', tipo: 'error' })
+            setTimeout(() => setMensaje({ texto: '', tipo: '' }), 3000)
+            return
+        }
 
         // Si rellenan nombre o teléfono se marca como reservada, si lo borran queda libre
         const nuevoEstado = (nombreTrim || telefonoTrim) ? 'reservada' : 'disponible'
 
         setMensaje({ texto: 'Actualizando cita...', tipo: 'info' })
 
+        const cambios = {
+            nombre_cliente: nombreTrim || null,
+            telefono: telefonoTrim || null,
+            tipo: editDatos.tipo,
+            estado: nuevoEstado
+        }
+        // Una cita libre no puede conservar el token de la reserva anterior.
+        if (nuevoEstado === 'disponible') cambios.token_cancelacion = null
+
         const { error } = await supabase
             .from('citas')
-            .update({
-                nombre_cliente: nombreTrim || null,
-                telefono: telefonoTrim || null,
-                tipo: editDatos.tipo,
-                estado: nuevoEstado
-            })
+            .update(cambios)
             .eq('id', citaId)
 
         if (error) {
@@ -249,10 +254,7 @@ export default function AdminPanel() {
                 {/* Navegación Días */}
                 <div className="flex items-center justify-between mb-10 pb-6 border-b border-darker/10">
                     <button onClick={() => cambiarDia(-1)} className="font-inter text-xs tracking-widest text-gray hover:text-primary uppercase transition-colors">&larr; Anterior</button>
-                    <input type="date" value={fecha} onChange={(e) => {
-                        if (citasBorrador.length > 0 && !window.confirm("Perderás los cambios sin guardar. ¿Continuar?")) return;
-                        setFecha(e.target.value)
-                    }} className="font-cormorant text-2xl md:text-3xl text-primary text-center bg-transparent outline-none cursor-pointer hover:text-accent transition-colors" />
+                    <input type="date" aria-label="Día" value={fecha} onChange={(e) => e.target.value && irADia(e.target.value)} className="font-cormorant text-2xl md:text-3xl text-primary text-center bg-transparent outline-none cursor-pointer hover:text-accent transition-colors" />
                     <button onClick={() => cambiarDia(1)} className="font-inter text-xs tracking-widest text-gray hover:text-primary uppercase transition-colors">Siguiente &rarr;</button>
                 </div>
 
@@ -276,7 +278,7 @@ export default function AdminPanel() {
                     ) : (
                         <div className="space-y-3">
                             {listaCompleta.map((cita) => {
-                                const hora = new Date(cita.fecha_hora).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                                const hora = horaMadrid(cita.fecha_hora)
                                 const estaReservada = cita.estado !== 'disponible' && !cita.esBorrador
                                 const estaEditando = citaEditando === cita.id
 
@@ -296,9 +298,7 @@ export default function AdminPanel() {
                                                 <div className="flex flex-col">
                                                     <label className="font-inter text-[10px] tracking-widest text-gray uppercase mb-1">Servicio</label>
                                                     <select value={editDatos.tipo} onChange={(e) => setEditDatos({ ...editDatos, tipo: e.target.value })} className="w-full p-3 border border-darker/20 rounded-xl bg-background/50 focus:bg-surface focus:ring-1 focus:ring-accent outline-none text-sm transition-all">
-                                                        <option value="Corte de pelo">Corte de pelo</option>
-                                                        <option value="Peinado y Styling">Peinado y Styling</option>
-                                                        <option value="Color y Mechas">Color y Mechas</option>
+                                                        {APP_CONFIG.services.map(srv => <option key={srv} value={srv}>{srv}</option>)}
                                                     </select>
                                                 </div>
                                                 <div className="flex flex-col">
@@ -335,7 +335,7 @@ export default function AdminPanel() {
                                                     {!cita.esBorrador && (
                                                         <button onClick={() => iniciarEdicion(cita)} className="font-inter text-[10px] tracking-widest uppercase text-accent hover:text-primary transition-colors" title="Editar cita">Editar</button>
                                                     )}
-                                                    <button onClick={() => cita.esBorrador ? eliminarBorrador(cita.id) : eliminarCitaGuardada(cita.fecha_hora)} className="font-inter text-[10px] tracking-widest uppercase text-gray hover:text-red-500 transition-colors" title="Eliminar cita">Eliminar</button>
+                                                    <button onClick={() => cita.esBorrador ? eliminarBorrador(cita.id) : eliminarCitaGuardada(cita.id)} className="font-inter text-[10px] tracking-widest uppercase text-gray hover:text-red-500 transition-colors" title="Eliminar cita">Eliminar</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -369,9 +369,7 @@ export default function AdminPanel() {
                         <div className="w-full min-w-0 flex flex-col">
                             <label className="block font-inter text-[10px] tracking-widest text-gray uppercase mb-2">Servicio</label>
                             <select value={nuevoTipo} onChange={(e) => setNuevoTipo(e.target.value)} className="w-full min-w-0 py-3 px-2 md:p-4 border border-darker/20 rounded-2xl bg-background/50 focus:bg-surface focus:ring-1 focus:ring-accent outline-none transition-all font-light text-sm box-border" required>
-                                <option value="Corte de pelo">Corte de pelo</option>
-                                <option value="Peinado y Styling">Peinado y Styling</option>
-                                <option value="Color y Mechas">Color y Mechas</option>
+                                {APP_CONFIG.services.map(srv => <option key={srv} value={srv}>{srv}</option>)}
                             </select>
                         </div>
                         <button type="submit" className="w-full sm:w-auto py-3 md:py-4 px-8 bg-primary text-surface font-inter text-xs tracking-widest uppercase rounded-2xl hover:bg-accent hover:text-primary transition-colors shadow-md box-border">
