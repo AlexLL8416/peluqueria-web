@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { supabase } from './supabase'
+import { Aviso } from './ui'
 import APP_CONFIG from './config/tenant.js'
 import { normalizarTelefono, telefonoValido, horaMadrid, madridAISO, rangoDiaMadrid, sumarDias, hoyMadrid } from './utils'
 
@@ -253,17 +255,12 @@ export default function AdminPanel() {
 
                 {/* Navegación Días */}
                 <div className="flex items-center justify-between mb-10 pb-6 border-b border-darker/10">
-                    <button onClick={() => cambiarDia(-1)} className="font-inter text-xs tracking-widest text-gray hover:text-primary uppercase transition-colors">&larr; Anterior</button>
+                    <button onClick={() => cambiarDia(-1)} className="font-inter text-xs tracking-widest text-gray hover:text-primary uppercase transition-colors inline-flex items-center gap-1 min-h-11"><ChevronLeft size={16} strokeWidth={1.5} aria-hidden="true" /> Anterior</button>
                     <input type="date" aria-label="Día" value={fecha} onChange={(e) => e.target.value && irADia(e.target.value)} className="font-cormorant text-2xl md:text-3xl text-primary text-center bg-transparent outline-none cursor-pointer hover:text-accent transition-colors" />
-                    <button onClick={() => cambiarDia(1)} className="font-inter text-xs tracking-widest text-gray hover:text-primary uppercase transition-colors">Siguiente &rarr;</button>
+                    <button onClick={() => cambiarDia(1)} className="font-inter text-xs tracking-widest text-gray hover:text-primary uppercase transition-colors inline-flex items-center gap-1 min-h-11">Siguiente <ChevronRight size={16} strokeWidth={1.5} aria-hidden="true" /></button>
                 </div>
 
-                {mensaje.texto && (
-                    <div className={`mb-8 p-4 text-center rounded-2xl font-light text-xs tracking-wider uppercase shadow-sm border ${mensaje.tipo === 'error' ? 'bg-red-50 text-red-700 border-red-200' :
-                        mensaje.tipo === 'info' ? 'bg-amber-50 text-amber-800 border-amber-200' : 'bg-emerald-50 text-emerald-800 border-emerald-200'}`}>
-                        {mensaje.texto}
-                    </div>
-                )}
+                <Aviso mensaje={mensaje} />
 
                 {/* Lista de Citas */}
                 <div className="mb-12 space-y-4">

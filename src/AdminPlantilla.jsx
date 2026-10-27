@@ -1,7 +1,9 @@
 import { useState } from 'react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { supabase } from './supabase'
+import { Aviso } from './ui'
 import APP_CONFIG from './config/tenant.js'
-import { madridAISO } from './utils'
+import { madridAISO, hoyMadrid } from './utils'
 
 export default function AdminPlantilla() {
     const [plantilla, setPlantilla] = useState([])
@@ -12,6 +14,7 @@ export default function AdminPlantilla() {
     const [fechaCalendario, setFechaCalendario] = useState(new Date())
     const [diasSeleccionados, setDiasSeleccionados] = useState([])
     const [mensaje, setMensaje] = useState({ texto: '', tipo: '' })
+    const hoy = hoyMadrid()
 
     const calcularSiguienteHueco = (huecos) => {
         if (huecos.length === 0) {
@@ -107,11 +110,7 @@ export default function AdminPlantilla() {
 
     return (
         <div className="w-full max-w-6xl mx-auto p-4 sm:p-6 lg:py-12">
-            {mensaje.texto && (
-                <div className={`mb-8 p-4 text-center rounded-2xl font-light text-xs tracking-wider uppercase shadow-sm border ${mensaje.tipo === 'error' ? 'bg-red-50 text-red-700 border-red-200' : mensaje.tipo === 'info' ? 'bg-amber-50 text-amber-800 border-amber-200' : 'bg-emerald-50 text-emerald-800 border-emerald-200'}`}>
-                    {mensaje.texto}
-                </div>
-            )}
+            <Aviso mensaje={mensaje} />
 
             <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
                 {/* PARTE 1: PLANTILLA DE HORAS */}
@@ -167,11 +166,11 @@ export default function AdminPlantilla() {
                     <h3 className="font-inter text-[10px] tracking-widest text-gray uppercase mb-2 px-2">2. Aplícalos al calendario</h3>
                     <div className="bg-surface p-5 md:p-8 rounded-3xl border border-darker/10 shadow-sm">
                         <div className="flex justify-between items-center mb-8">
-                            <button onClick={() => cambiarMes(-1)} className="text-gray hover:text-primary p-2 text-xl transition-colors">&larr;</button>
+                            <button onClick={() => cambiarMes(-1)} aria-label="Mes anterior" className="text-gray hover:text-primary p-2 min-w-11 min-h-11 inline-flex items-center justify-center transition-colors"><ChevronLeft size={20} strokeWidth={1.5} aria-hidden="true" /></button>
                             <h4 className="font-cormorant text-xl md:text-2xl text-primary uppercase font-medium tracking-wide">
                                 {meses[fechaCalendario.getMonth()]} {fechaCalendario.getFullYear()}
                             </h4>
-                            <button onClick={() => cambiarMes(1)} className="text-gray hover:text-primary p-2 text-xl transition-colors">&rarr;</button>
+                            <button onClick={() => cambiarMes(1)} aria-label="Mes siguiente" className="text-gray hover:text-primary p-2 min-w-11 min-h-11 inline-flex items-center justify-center transition-colors"><ChevronRight size={20} strokeWidth={1.5} aria-hidden="true" /></button>
                         </div>
                         <div className="grid grid-cols-7 gap-1 md:gap-2 mb-3">
                             {['L', 'M', 'X', 'J', 'V', 'S', 'D'].map(d => (
@@ -186,9 +185,10 @@ export default function AdminPlantilla() {
                                 const diaStr = dia.toString().padStart(2, '0')
                                 const fechaActualStr = `${fechaCalendario.getFullYear()}-${mesStr}-${diaStr}`
                                 const seleccionado = diasSeleccionados.includes(fechaActualStr)
+                                const pasado = fechaActualStr < hoy
 
                                 return (
-                                    <button key={dia} onClick={() => toggleDia(dia)} className={`aspect-square flex items-center justify-center rounded-xl font-inter text-xs md:text-sm transition-all ${seleccionado ? 'bg-primary text-surface shadow-md scale-105' : 'bg-background text-primary hover:border hover:border-accent border border-transparent'}`}>
+                                    <button key={dia} onClick={() => toggleDia(dia)} disabled={pasado} aria-pressed={seleccionado} className={`aspect-square flex items-center justify-center rounded-xl font-inter text-xs md:text-sm transition-all disabled:opacity-30 disabled:cursor-not-allowed ${seleccionado ? 'bg-primary text-surface shadow-md scale-105' : 'bg-background text-primary hover:border hover:border-accent border border-transparent'}`}>
                                         {dia}
                                     </button>
                                 )

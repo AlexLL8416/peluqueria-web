@@ -17,3 +17,14 @@
 html { accent-color: var(--color-primary); caret-color: var(--color-accent); }
 :focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; border-radius: 4px; }
 a { text-underline-offset: 3px; }
+
+/* Movimiento: una entrada en la portada y transiciones suaves entre pasos */
+@keyframes aparecer {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
+}
+.fade-in, .animate-fade-in { animation: aparecer 0.45s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.reveal { animation: aparecer 0.9s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: calc(var(--i, 0) * 110ms); }
+@media (prefers-reduced-motion: reduce) {
+  .fade-in, .animate-fade-in, .reveal { animation: none; }
+}

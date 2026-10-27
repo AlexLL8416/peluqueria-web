@@ -1,44 +1,7 @@
-import { ArrowRight, Scissors, Brush, Sparkles } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import APP_CONFIG from './config/tenant.js'
 
 export default function Services() {
-    // Aumentamos un poco el tamaño del icono (size={32}) al quitarle el fondo circular
-    const servicesList = [
-        {
-            name: 'Corte Mujer',
-            price: '28€',
-            icon: <Scissors className="text-accent" strokeWidth={1} size={32} />
-        },
-        {
-            name: 'Peinado y Styling',
-            price: '35€',
-            icon: <Brush className="text-accent" strokeWidth={1} size={32} />
-        },
-        {
-            name: 'Color y Mechas',
-            price: '60€',
-            icon: <Sparkles className="text-accent" strokeWidth={1} size={32} />
-        }
-    ];
-
-    const productsList = [
-        {
-            name: 'Champú Voluminizador',
-            price: '18€',
-            description: 'Aporta cuerpo y movimiento a cabellos finos, con extractos botánicos.'
-        },
-        {
-            name: 'Acondicionador Nutritivo',
-            price: '20€',
-            description: 'Desenreda, nutre y protege el cabello seco o dañado.'
-        },
-        {
-            name: 'Mascarilla Reparadora',
-            price: '25€',
-            description: 'Tratamiento intensivo para recuperar brillo y elasticidad.'
-        }
-    ];
-
     return (
         <section className="bg-background py-24 md:py-24 px-6 md:px-12">
             <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-16 relative">
@@ -70,30 +33,32 @@ export default function Services() {
 
                     {/* BLOQUE SUPERIOR: Servicios (Ahora sin aspecto de tarjeta) */}
                     <div>
-                        <h3 className="font-inter text-xs tracking-widest text-primary uppercase mb-10 border-b border-darker pb-4">
+                        <h3 className="font-inter text-xs tracking-widest text-primary uppercase mb-2 border-b border-darker pb-4">
                             Nuestros Servicios
                         </h3>
 
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-15 md:gap-6 pt-3">
-                            {servicesList.map((service, index) => (
-                                <div
-                                    key={index}
-                                    className="flex flex-col items-center text-center h-full"
-                                >
-                                    <div className="mb-5">
-                                        {service.icon}
-                                    </div>
-                                    <h4 className="font-cormorant text-2xl text-primary mb-3">
-                                        {service.name}
-                                    </h4>
-                                    <span className="font-inter text-lg text-gray font-medium mt-auto">
-                                        {service.price}
-                                    </span>
-                                </div>
+                        <ul className="divide-y divide-darker/40">
+                            {APP_CONFIG.menu.map((service) => (
+                                <li key={service.name}>
+                                    <a
+                                        href={`/reservar?servicio=${encodeURIComponent(service.reserva)}`}
+                                        className="group flex items-baseline gap-4 py-5 md:py-6"
+                                    >
+                                        <span className="font-cormorant text-2xl md:text-3xl text-primary group-hover:text-accent transition-colors duration-300">
+                                            {service.name}
+                                        </span>
+                                        <span aria-hidden="true" className="flex-1 min-w-6 border-b border-dotted border-darker" />
+                                        <span className="font-inter text-base text-primary tabular-nums">{service.price}</span>
+                                        <span className="inline-flex items-center gap-1.5 font-inter text-[10px] tracking-widest uppercase text-gray group-hover:text-primary transition-colors">
+                                            <span className="hidden sm:inline">Reservar</span>
+                                            <ArrowRight size={14} strokeWidth={1.5} aria-hidden="true" className="group-hover:translate-x-0.5 transition-transform" />
+                                            <span className="sr-only sm:hidden">Reservar {service.name}</span>
+                                        </span>
+                                    </a>
+                                </li>
                             ))}
-                        </div>
+                        </ul>
                     </div>
-
                     {/* BLOQUE INFERIOR: Productos (Mantenemos las tarjetas porque SÍ se pueden pulsar) */}
                     <div className="mt-8">
                         <h3 className="font-inter text-xs tracking-widest text-primary uppercase mb-8 border-b border-darker pb-4">
@@ -101,17 +66,17 @@ export default function Services() {
                         </h3>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            {productsList.map((product, index) => (
-                                <div
-                                    key={index}
-                                    className="group bg-surface border border-darker/30 hover:border-accent p-6 rounded-2xl flex flex-col h-full shadow-sm cursor-pointer transition-all duration-300"
-                                    onClick={() => window.location.href = '/productos'}
+                            {APP_CONFIG.featuredProducts.map((product) => (
+                                <a
+                                    key={product.name}
+                                    href="/productos"
+                                    className="group bg-surface border border-darker/30 hover:border-accent p-6 rounded-2xl flex flex-col h-full shadow-sm transition-colors duration-300"
                                 >
-                                    <div className="flex justify-between items-start mb-4 gap-2">
-                                        <h4 className="font-cormorant text-2xl text-primary group-hover:text-accent transition-colors duration-300">
+                                    <div className="flex justify-between items-start mb-4 gap-3">
+                                        <h4 className="min-w-0 font-cormorant text-2xl leading-tight text-primary group-hover:text-accent transition-colors duration-300">
                                             {product.name}
                                         </h4>
-                                        <span className="font-inter text-sm text-gray font-medium mt-1">
+                                        <span className="shrink-0 font-inter text-sm text-gray font-medium tabular-nums mt-1">
                                             {product.price}
                                         </span>
                                     </div>
@@ -127,7 +92,7 @@ export default function Services() {
                                             size={20}
                                         />
                                     </div>
-                                </div>
+                                </a>
                             ))}
                         </div>
                     </div>

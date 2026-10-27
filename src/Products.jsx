@@ -1,4 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { X } from 'lucide-react'
+import { VolverInicio } from './ui'
 import { APP_CONFIG } from './config/tenant';
 
 // Datos de ejemplo: Sustituye las URLs por las rutas reales de tus imágenes (ej: '/src/assets/cera.jpg')
@@ -43,6 +45,14 @@ const listaProductos = [
 export default function Products() {
     // Estado para controlar qué producto está abierto en la ventana modal
     const [productoSeleccionado, setProductoSeleccionado] = useState(null)
+    const dialogo = useRef(null)
+
+    // <dialog> nativo: atrapa el foco y cierra con Escape.
+    useEffect(() => {
+        if (productoSeleccionado) dialogo.current?.showModal()
+    }, [productoSeleccionado])
+
+    const cerrar = () => dialogo.current?.close()
 
     return (
         <div className="w-full min-h-screen bg-background flex flex-col font-inter">
@@ -50,13 +60,7 @@ export default function Products() {
             {/* CABECERA */}
             <div className="w-full bg-surface border-b border-darker/10 p-6 md:p-8 shadow-sm text-center relative flex items-center justify-center">
 
-                {/* Botón de volver al inicio */}
-                <a
-                    href="/"
-                    className="absolute left-8 md:left-12 scale-175 font-inter text-[10px] tracking-widest text-gray hover:text-primary uppercase flex items-center gap-2 transition-colors"
-                >
-                    &larr; <span className="hidden md:inline">Volver</span>
-                </a>
+                <VolverInicio className="absolute left-3 md:left-10" />
 
                 <div>
                     <span className="font-inter text-[10px] tracking-[0.3em] text-gray uppercase mb-2 block">
@@ -73,16 +77,18 @@ export default function Products() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 md:gap-10">
 
                     {listaProductos.map((producto) => (
-                        <div
+                        <button
+                            type="button"
                             key={producto.id}
                             onClick={() => setProductoSeleccionado(producto)}
-                            className="group cursor-pointer flex flex-col"
+                            className="group flex flex-col text-center"
                         >
                             {/* Tarjeta de imagen con efecto escala de grises */}
                             <div className="w-full aspect-[4/5] bg-surface rounded-2xl overflow-hidden mb-4 shadow-sm relative">
                                 <img
                                     src={producto.imagen}
                                     alt={producto.nombre}
+                                    loading="lazy"
                                     className="w-full h-full object-cover grayscale transition-all duration-700 ease-in-out md:group-hover:grayscale-0 md:group-hover:scale-105"
                                 />
                                 {/* Overlay sutil para indicar que es clicable en móvil */}
@@ -98,28 +104,27 @@ export default function Products() {
                                     {producto.precio}
                                 </p>
                             </div>
-                        </div>
+                        </button>
                     ))}
                 </div>
             </div>
 
             {/* MODAL DE DESCRIPCIÓN (Se muestra solo si hay un producto seleccionado) */}
-            {productoSeleccionado && (
-                <div
-                    className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-6 bg-darker/40 backdrop-blur-sm animate-fade-in"
-                    onClick={() => setProductoSeleccionado(null)} // Cierra al hacer clic fuera
-                >
-                    {/* Contenedor principal del modal */}
-                    <div
-                        className="w-full max-w-lg bg-surface rounded-3xl shadow-xl overflow-hidden flex flex-col transform transition-all"
-                        onClick={(e) => e.stopPropagation()} // Evita que se cierre al hacer clic dentro
-                    >
-                        {/* Botón cerrar flotante */}
+            <dialog
+                ref={dialogo}
+                aria-labelledby="producto-titulo"
+                onClose={() => setProductoSeleccionado(null)}
+                onClick={(e) => e.target === dialogo.current && cerrar()}
+                className="m-auto w-full max-w-lg bg-transparent p-4 backdrop:bg-darker/40 backdrop:backdrop-blur-sm"
+            >
+                {productoSeleccionado && (
+                    <div className="relative w-full bg-surface rounded-3xl shadow-xl overflow-hidden flex flex-col animate-fade-in">
                         <button
-                            onClick={() => setProductoSeleccionado(null)}
-                            className="absolute top-4 right-4 z-10 bg-surface/80 backdrop-blur-md text-primary w-8 h-8 rounded-full flex items-center justify-center hover:bg-darker hover:text-surface transition-colors border border-darker/10"
+                            onClick={cerrar}
+                            aria-label="Cerrar"
+                            className="absolute top-4 right-4 z-10 bg-surface/90 text-primary w-11 h-11 rounded-full flex items-center justify-center hover:bg-primary hover:text-surface transition-colors border border-darker/20"
                         >
-                            ✕
+                            <X size={18} strokeWidth={1.5} aria-hidden="true" />
                         </button>
 
                         <div className="w-full h-64 md:h-80 bg-surface relative">
@@ -131,7 +136,7 @@ export default function Products() {
                         </div>
 
                         <div className="p-8 text-center">
-                            <h2 className="font-cormorant text-3xl text-primary mb-2">
+                            <h2 id="producto-titulo" className="font-cormorant text-3xl text-primary mb-2">
                                 {productoSeleccionado.nombre}
                             </h2>
                             <p className="font-inter text-sm tracking-widest text-accent uppercase font-medium mb-6">
@@ -145,15 +150,15 @@ export default function Products() {
                             </p>
 
                             <button
-                                onClick={() => setProductoSeleccionado(null)}
+                                onClick={cerrar}
                                 className="mt-8 w-full border border-darker/20 text-primary font-inter text-xs tracking-widest uppercase py-4 rounded-2xl hover:border-darker hover:bg-background transition-all"
                             >
                                 Cerrar
                             </button>
                         </div>
                     </div>
-                </div>
-            )}
+                )}
+            </dialog>
         </div>
     )
 }

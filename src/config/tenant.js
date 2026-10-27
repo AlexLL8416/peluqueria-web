@@ -17,6 +17,17 @@ export const APP_CONFIG = {
   },
   // Deben coincidir con el enum public.tipo_servicio de la base de datos.
   services: ["Corte de pelo", "Peinado y Styling", "Color y Mechas"],
+  // Carta de la portada; `reserva` es el servicio de arriba que se preselecciona al reservar.
+  menu: [
+    { name: "Corte Mujer", price: "28€", reserva: "Corte de pelo" },
+    { name: "Peinado y Styling", price: "35€", reserva: "Peinado y Styling" },
+    { name: "Color y Mechas", price: "60€", reserva: "Color y Mechas" },
+  ],
+  featuredProducts: [
+    { name: "Champú Voluminizador", price: "18€", description: "Aporta cuerpo y movimiento a cabellos finos, con extractos botánicos." },
+    { name: "Acondicionador Nutritivo", price: "20€", description: "Desenreda, nutre y protege el cabello seco o dañado." },
+    { name: "Mascarilla Reparadora", price: "25€", description: "Tratamiento intensivo para recuperar brillo y elasticidad." },
+  ],
   socials: {
     instagram: "https://www.instagram.com/example",
     facebook: "https://www.facebook.com/example",

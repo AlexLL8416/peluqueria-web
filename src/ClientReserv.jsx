@@ -19,7 +19,11 @@ export default function ClientView() {
     const [diaSeleccionado, setDiaSeleccionado] = useState('')
 
     // Flujo de reserva
-    const [servicioSeleccionado, setServicioSeleccionado] = useState(null)
+    // La carta de la portada enlaza con ?servicio= para llegar con el servicio elegido.
+    const [servicioSeleccionado, setServicioSeleccionado] = useState(() => {
+        const servicio = new URLSearchParams(window.location.search).get('servicio')
+        return APP_CONFIG.services.includes(servicio) ? servicio : null
+    })
     const [citaSeleccionada, setCitaSeleccionada] = useState(null)
     const [citaConfirmada, setCitaConfirmada] = useState(null)
 

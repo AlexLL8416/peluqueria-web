@@ -9,27 +9,29 @@ export default function Hero() {
         <div className="flex flex-col items-center md:items-start text-center md:text-left mt-10 md:mt-0">
 
 
-          <h1 className="font-cormorant text-6xl md:text-7xl lg:text-8xl text-primary leading-[1.1] mb-8">
-            {APP_CONFIG.copy.heroTitle} <br /> <span className="bold text-accent">{APP_CONFIG.copy.heroSubtitle}</span>
+          <h1 style={{ "--i": 0 }} className="reveal font-cormorant text-6xl md:text-7xl lg:text-8xl text-primary leading-[1.1] mb-8">
+            {APP_CONFIG.copy.heroTitle} <br /> <span className="text-accent">{APP_CONFIG.copy.heroSubtitle}</span>
           </h1>
 
-          <p className="font-inter text-sm md:text-base text-gray max-w-md mb-10 font-light leading-relaxed">
+          <p style={{ "--i": 1 }} className="reveal font-inter text-sm md:text-base text-gray max-w-md mb-10 font-light leading-relaxed">
             Descubre una experiencia de cuidado personal donde la precisión técnica se encuentra con la elegancia. Un espacio diseñado para ti.
           </p>
 
           <a
             href="/reservar"
-            className="bg-primary text-surface px-8 py-4 rounded-full font-inter text-xs tracking-widest uppercase hover:bg-accent hover:shadow-lg transition-all duration-500 inline-block"
+            style={{ "--i": 2 }}
+            className="reveal bg-primary text-surface px-8 py-4 rounded-full font-inter text-xs tracking-widest uppercase hover:bg-accent hover:shadow-lg transition-all duration-500 inline-block"
           >
             {APP_CONFIG.copy.heroTagline}
           </a>
 
         </div>
 
-        <div className="relative w-full h-[55vh] md:h-[80vh] rounded-4xl overflow-hidden shadow-sm">
+        <div style={{ "--i": 1 }} className="reveal relative w-full h-[55vh] md:h-[80vh] rounded-4xl overflow-hidden shadow-sm">
           <img
             src="https://images.unsplash.com/photo-1633681926022-84c23e8cb2d6?q=80&w=1000&auto=format&fit=crop"
-            alt="Interior de Ejemplo Peluquería"
+            alt={`Interior de ${APP_CONFIG.site.name}`}
+            fetchPriority="high"
             className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 hover:scale-105"
           />
           <div className="absolute inset-0 bg-primary/5 pointer-events-none"></div>

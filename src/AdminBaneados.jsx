@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { supabase } from './supabase'
+import { Aviso } from './ui'
 
 export default function AdminBaneados() {
     const [baneados, setBaneados] = useState([])
@@ -48,12 +49,7 @@ export default function AdminBaneados() {
                 </p>
             </div>
 
-            {mensaje.texto && (
-                <div className={`mb-8 p-4 text-center rounded-2xl font-light text-xs tracking-wider uppercase shadow-sm border ${mensaje.tipo === 'error' ? 'bg-red-50 text-red-700 border-red-200' : 'bg-emerald-50 text-emerald-800 border-emerald-200'
-                    }`}>
-                    {mensaje.texto}
-                </div>
-            )}
+            <Aviso mensaje={mensaje} />
 
             {cargando ? (
                 <div className="text-center py-10 text-gray text-sm">Cargando lista...</div>

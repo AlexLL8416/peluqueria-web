@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { supabase } from './supabase'
+import { VolverInicio } from './ui'
 import APP_CONFIG from './config/tenant.js'
 
 export default function AdminLogin() {
@@ -17,14 +18,7 @@ export default function AdminLogin() {
 
     return (
         <div className="w-full min-h-screen bg-background flex flex-col justify-center items-center p-6 font-inter relative">
-
-            {/* Botón opcional para volver a la web principal si alguien entra por error */}
-            <a
-                href="/"
-                className="absolute top-8 left-6 md:left-12 font-inter text-[10px] tracking-widest text-gray hover:text-primary uppercase flex items-center gap-2 transition-colors"
-            >
-                &larr; <span className="hidden md:inline">Volver a la web</span>
-            </a>
+            <VolverInicio className="absolute top-6 left-3 md:left-10" />
 
             <div className="w-full max-w-md bg-surface p-8 md:p-10 rounded-3xl shadow-sm border border-darker/10">
 
@@ -45,10 +39,12 @@ export default function AdminLogin() {
 
                 <form onSubmit={iniciarSesion} className="space-y-6">
                     <div>
-                        <label className="block font-inter text-[10px] tracking-widest text-gray uppercase mb-2">
+                        <label htmlFor="login-email" className="block font-inter text-[10px] tracking-widest text-gray uppercase mb-2">
                             Correo
                         </label>
                         <input
+                            id="login-email"
+                            autoComplete="email"
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
@@ -59,10 +55,12 @@ export default function AdminLogin() {
                     </div>
 
                     <div>
-                        <label className="block font-inter text-[10px] tracking-widest text-gray uppercase mb-2">
+                        <label htmlFor="login-password" className="block font-inter text-[10px] tracking-widest text-gray uppercase mb-2">
                             Contraseña
                         </label>
                         <input
+                            id="login-password"
+                            autoComplete="current-password"
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}

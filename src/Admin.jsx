@@ -54,6 +54,7 @@ export default function Admin() {
                 <div className="flex bg-background/50 p-1.5 rounded-xl border border-darker/10 w-full lg:w-auto justify-center overflow-x-auto">
                     <button
                         onClick={() => setVistaActiva('diario')}
+                        aria-pressed={vistaActiva === 'diario'}
                         className={`flex-1 lg:flex-none px-4 md:px-5 py-2.5 rounded-lg font-inter text-[10px] tracking-widest uppercase transition-all whitespace-nowrap ${vistaActiva === 'diario' ? 'bg-primary text-surface shadow-sm' : 'text-gray hover:text-primary'
                             }`}
                     >
@@ -61,6 +62,7 @@ export default function Admin() {
                     </button>
                     <button
                         onClick={() => setVistaActiva('mensual')}
+                        aria-pressed={vistaActiva === 'mensual'}
                         className={`flex-1 lg:flex-none px-4 md:px-5 py-2.5 rounded-lg font-inter text-[10px] tracking-widest uppercase transition-all whitespace-nowrap ${vistaActiva === 'mensual' ? 'bg-primary text-surface shadow-sm' : 'text-gray hover:text-primary'
                             }`}
                     >
@@ -68,6 +70,7 @@ export default function Admin() {
                     </button>
                     <button
                         onClick={() => setVistaActiva('baneados')}
+                        aria-pressed={vistaActiva === 'baneados'}
                         className={`flex-1 lg:flex-none px-4 md:px-5 py-2.5 rounded-lg font-inter text-[10px] tracking-widest uppercase transition-all whitespace-nowrap ${vistaActiva === 'baneados' ? 'bg-red-50 text-red-600 border border-red-100 shadow-sm' : 'text-gray hover:text-red-500'
                             }`}
                     >

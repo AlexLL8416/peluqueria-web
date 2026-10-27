@@ -1,4 +1,5 @@
 import { APP_CONFIG } from './config/tenant'
+import { VolverInicio } from './ui'
 
 export default function Privacy() {
     const { privacy } = APP_CONFIG
@@ -6,9 +7,7 @@ export default function Privacy() {
     return (
         <div className="w-full min-h-screen bg-background flex flex-col font-inter">
             <div className="w-full bg-surface border-b border-darker/10 p-8 shadow-sm text-center relative flex items-center justify-center">
-                <a href="/" className="absolute left-8 md:left-12 scale-175 font-inter text-[10px] tracking-widest text-gray hover:text-primary uppercase flex items-center gap-2 transition-colors">
-                    &larr; <span className="hidden md:inline">Volver</span>
-                </a>
+                <VolverInicio className="absolute left-3 md:left-10" />
                 <div>
                     <span className="font-inter text-[10px] tracking-[0.3em] text-gray uppercase mb-2 block">
                         {APP_CONFIG.site.name}
@@ -22,8 +21,8 @@ export default function Privacy() {
             <div className="w-full max-w-2xl mx-auto flex-1 p-6 md:p-10 space-y-8">
                 {privacy.sections.map(({ title, body }) => (
                     <section key={title}>
-                        <h2 className="font-cormorant text-2xl text-primary mb-2">{title}</h2>
-                        <p className="text-sm text-gray font-light leading-relaxed">{body}</p>
+                        <h2 className="font-cormorant text-2xl text-primary mb-2 text-balance">{title}</h2>
+                        <p className="text-[15px] text-primary/80 font-light leading-relaxed max-w-prose">{body}</p>
                     </section>
                 ))}
                 <p className="text-[10px] tracking-widest text-gray uppercase pt-6 border-t border-darker/10">
